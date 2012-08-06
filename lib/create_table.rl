@@ -40,65 +40,48 @@ All that stuff about table name
 %%{
   machine chopper;
 
-  action table_name_s {
+  action StartTableName {
     s = p
   }
-  action table_name_e {
+  action EndTableName {
     self.table_name = read(s, p)
     s = nil
   }
-  action column_name_s {
+  action StartColumnName {
     $stderr.puts "n_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   }
-  action column_name_e {
+  action EndColumnName {
     $stderr.puts "n_e(#{s}, #{p}) - #{read(s, p).inspect}" if ENV['VERBOSE'] == 'true'
     col = Column.new(self, read(s, p))
     columns << col
     s = nil
   }
-  action column_options_s {
+  action StartColumnOptions {
     $stderr.puts "o_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   }
-  action column_options_e {
+  action EndColumnOptions {
     $stderr.puts "o_e(#{s}, #{p}) - #{read(s, p).inspect}" if ENV['VERBOSE'] == 'true'
     col.options = read(s, p)
     s = nil
   }
-  action temporary {
-    @temporary_query = true
-  }
-  action inc {
-    $stderr.puts "inc" if ENV['VERBOSE'] == 'true'
-    parentheses += 1
-  }
-  action dec {
-    $stderr.puts "dec" if ENV['VERBOSE'] == 'true'
-    parentheses -= 1
-  }
-  action inside {
-    r = parentheses > 0
-    $stderr.puts "inside(#{r.inspect})" if ENV['VERBOSE'] == 'true'
-    r
-  }
-  action outside {
+
+  # conditions
+  action NotEnclosedInParentheses {
     r = (parentheses == 0)
     $stderr.puts "outside(#{r.inspect})" if ENV['VERBOSE'] == 'true'
     r
   }
 
-  ident = [_a-zA-Z][_a-zA-Z0-9]*;
-  q = ["`]?;
-  
-  # http://www.complang.org/pipermail/ragel-users/2010-April/002404.html
-  counter = ( any | '(' @inc | ')' @dec )*;
-
-  create_table      = 'create'i space+ ('temporary'i space+ @temporary)* 'table'i;
-  table_name        = q ident >table_name_s %table_name_e q;
-  column_name       = q ident >column_name_s %column_name_e q;
-  column_options    = (any+ & counter) >column_options_s %column_options_e :> ([,)] when outside);
-  column_definition = space* column_name space+ column_options;
+  ident               = [_a-zA-Z][_a-zA-Z0-9]*;
+  quote_ident         = ["`];
+  parentheses_counter = ( any | '(' @{parentheses+=1} | ')' @{parentheses-=1} )*;
+  create_table        = 'create'i space+ ('temporary'i space+ @{@temporary_query=true})? 'table'i;
+  table_name          = quote_ident? ident >StartTableName %EndTableName quote_ident?;
+  column_name         = quote_ident? ident >StartColumnName %EndColumnName quote_ident?;
+  column_options      = any+ & parentheses_counter >StartColumnOptions %EndColumnOptions :> [,)] when NotEnclosedInParentheses;
+  column_definition   = space* column_name space+ column_options;
 
   main := space* create_table space+ table_name space+ '(' column_definition+ ')';
 }%%
