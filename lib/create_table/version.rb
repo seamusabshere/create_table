@@ -1,0 +1,3 @@
+class CreateTable
+  VERSION = "0.0.1"
+end
