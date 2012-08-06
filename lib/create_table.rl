@@ -66,6 +66,9 @@ All that stuff about table name
     col.options = read(s, p)
     s = nil
   }
+  action temporary {
+    @temporary_query = true
+  }
   action inc {
     $stderr.puts "inc" if ENV['VERBOSE'] == 'true'
     parentheses += 1
@@ -91,7 +94,7 @@ All that stuff about table name
   # http://www.complang.org/pipermail/ragel-users/2010-April/002404.html
   counter = ( any | '(' @inc | ')' @dec )*;
 
-  create_table      = 'create'i space+ 'table'i;
+  create_table      = 'create'i space+ ('temporary'i space+ @temporary)* 'table'i;
   table_name        = q ident >table_name_s %table_name_e q;
   column_name       = q ident >column_name_s %column_name_e q;
   column_options    = (any+ & counter) >column_options_s %column_options_e :> ([,)] when outside);
@@ -111,6 +114,10 @@ class CreateTable
     @data = sql.unpack('c*')
     @columns = []
     parse!
+  end
+
+  def temporary?
+    @temporary_query == true
   end
 
   private
