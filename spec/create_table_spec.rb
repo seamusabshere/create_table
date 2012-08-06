@@ -12,21 +12,17 @@ describe CreateTable do
         )
       })
     end
-    describe '#table_name' do
-      it "reads table name" do
-        @c.table_name.should == 'cats'
-      end
+    it "reads table name" do
+      @c.table_name.should == 'cats'
     end
-    describe '#columns' do
-      it "reads all columns" do
-        @c.columns.length.should == 4
-      end
-      it "reads column names" do
-        @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
-      end
-      it "reads column options" do
-        @c.columns.map(&:options).should == ['CHARACTER VARYING(255)', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
-      end
+    it "reads all columns" do
+      @c.columns.length.should == 4
+    end
+    it "reads column names" do
+      @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
+    end
+    it "reads column options" do
+      @c.columns.map(&:options).should == ['CHARACTER VARYING(255)', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
     end
   end
 
@@ -41,21 +37,17 @@ describe CreateTable do
         )
       })
     end
-    describe '#table_name' do
-      it "reads table name" do
-        @c.table_name.should == 'cats'
-      end
+    it "reads table name" do
+      @c.table_name.should == 'cats'
     end
-    describe '#columns' do
-      it "reads all columns" do
-        @c.columns.length.should == 4
-      end
-      it "reads column names" do
-        @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
-      end
-      it "reads column options" do
-        @c.columns.map(&:options).should == ['CHARACTER VARYING(255)', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
-      end
+    it "reads all columns" do
+      @c.columns.length.should == 4
+    end
+    it "reads column names" do
+      @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
+    end
+    it "reads column options" do
+      @c.columns.map(&:options).should == ['CHARACTER VARYING(255)', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
     end
   end
 
@@ -70,21 +62,17 @@ describe CreateTable do
         )
       })
     end
-    describe '#table_name' do
-      it "reads table name" do
-        @c.table_name.should == 'cats'
-      end
+    it "reads table name" do
+      @c.table_name.should == 'cats'
     end
-    describe '#columns' do
-      it "reads all columns" do
-        @c.columns.length.should == 4
-      end
-      it "reads column names" do
-        @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
-      end
-      it "reads column options" do
-        @c.columns.map(&:options).should == ['CHARACTER VARYING(255)', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
-      end
+    it "reads all columns" do
+      @c.columns.length.should == 4
+    end
+    it "reads column names" do
+      @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
+    end
+    it "reads column options" do
+      @c.columns.map(&:options).should == ['CHARACTER VARYING(255)', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
     end
   end
 end
