@@ -86,13 +86,14 @@ All that stuff about table name
   }
 
   ident = [_a-zA-Z][_a-zA-Z0-9]*;
-
+  q = ["`]?;
+  
   # http://www.complang.org/pipermail/ragel-users/2010-April/002404.html
   counter = ( any | '(' @inc | ')' @dec )*;
 
   create_table      = 'create'i space+ 'table'i;
-  table_name        = ident >table_name_s %table_name_e;
-  column_name       = ident >column_name_s %column_name_e;
+  table_name        = q ident >table_name_s %table_name_e q;
+  column_name       = q ident >column_name_s %column_name_e q;
   column_options    = (any+ & counter) >column_options_s %column_options_e :> ([,)] when outside);
   column_definition = space* column_name space+ column_options;
 
