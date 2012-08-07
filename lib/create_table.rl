@@ -65,6 +65,9 @@ class CreateTable
     end
   end
 
+  # http://ostermiller.org/findcomment.html
+  COMMENT = %r{/\*(?:.|[\r\n])*?\*/}m
+
   attr_reader :data
   attr_reader :columns
 
@@ -74,7 +77,7 @@ class CreateTable
   def initialize(sql = nil)
     @columns = []
     if sql
-      @data = sql.unpack('c*')
+      @data = sql.gsub(COMMENT, '').unpack('c*')
       parse!
     end
   end

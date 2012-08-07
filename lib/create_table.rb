@@ -23,6 +23,9 @@ class CreateTable
     end
   end
 
+  # http://ostermiller.org/findcomment.html
+  COMMENT = %r{/\*(?:.|[\r\n])*?\*/}m
+
   attr_reader :data
   attr_reader :columns
 
@@ -32,7 +35,7 @@ class CreateTable
   def initialize(sql = nil)
     @columns = []
     if sql
-      @data = sql.unpack('c*')
+      @data = sql.gsub(COMMENT, '').unpack('c*')
       parse!
     end
   end
@@ -65,7 +68,7 @@ class CreateTable
 
   def parse!
     
-# line 69 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 72 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 class << self
 	attr_accessor :_create_table_parser_cond_keys
 	private :_create_table_parser_cond_keys, :_create_table_parser_cond_keys=
@@ -603,7 +606,7 @@ end
 self.create_table_parser_en_main = 1;
 
 
-# line 110 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 113 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
     
     parentheses = 0
@@ -611,18 +614,18 @@ self.create_table_parser_en_main = 1;
     pe = eof = data.length
 
     
-# line 615 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 618 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = create_table_parser_start
 end
 
-# line 117 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 120 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
 
     
-# line 626 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 629 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _cond, _conds, _widec, _acts, _nacts = nil
@@ -772,7 +775,7 @@ parentheses+=1		end
 # line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 parentheses-=1		end
-# line 776 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 779 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 	end
 	end
 	end
@@ -795,7 +798,7 @@ parentheses-=1		end
 end
 	end
 
-# line 120 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 123 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
   end
 end

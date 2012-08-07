@@ -1,0 +1,36 @@
+name: Comments galore
+table_name: cats
+columns.length: 4
+columns.map(&:name):
+  - nickname
+  - birthday
+  - license_id
+  - price
+columns.map(&:options):
+  - CHARACTER VARYING(255)
+  - DATE
+  - INTEGER
+  - NUMERIC(5,2)
+input: |
+  /* b o yah */CREATE TABLE cats (/* daom */
+    nickname /*yah
+    see
+    i didn't
+    think
+    so*/ CHARACTER VARYING(255), /*this is a great nickname*/
+    birthday /* did you notice this? */ DATE,
+    license_id INTEGER, /* oh yah that's cool too */
+    /* oh yah that's hilarious */ price NUMERIC(5,2)
+  )/* gosh 
+  when
+  will
+  it
+  end
+  */
+output: |
+  CREATE TABLE cats (
+    nickname CHARACTER VARYING(255),
+    birthday DATE,
+    license_id INTEGER,
+    price NUMERIC(5,2)
+  )
