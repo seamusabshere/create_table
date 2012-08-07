@@ -1,6 +1,5 @@
-name: MySQL-style backticks with TEMPORARY
+name: MySQL-style backticks
 table_name: cats
-temporary: true
 columns.length: 4
 columns.map(&:name):
   - nickname
@@ -12,10 +11,17 @@ columns.map(&:options):
   - DATE
   - INTEGER
   - NUMERIC(5,2)
-sql: |
-  CREATE TEMPORARY TABLE `cats` (
+input: |
+  CREATE TABLE `cats` (
     `nickname` CHARACTER VARYING(255),
     `birthday` DATE,
     `license_id` INTEGER,
     `price` NUMERIC(5,2)
+  )
+output: |
+  CREATE TABLE cats (
+    nickname CHARACTER VARYING(255),
+    birthday DATE,
+    license_id INTEGER,
+    price NUMERIC(5,2)
   )
