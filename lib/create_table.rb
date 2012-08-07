@@ -12,6 +12,17 @@ require 'create_table/column'
 =end
 
 class CreateTable
+  class << self
+    def quote_ident(ident)
+      @reserved_words ||= (IO.readlines(File.expand_path('../create_table/mysql_reserved.txt', __FILE__)) + IO.readlines(File.expand_path('../create_table/pg_reserved.txt', __FILE__))).map(&:chomp).sort.uniq
+      if @reserved_words.include?(ident.upcase)
+        '"' + ident + '"'
+      else
+        ident
+      end
+    end
+  end
+
   attr_reader :data
   attr_reader :columns
 
@@ -36,10 +47,14 @@ class CreateTable
     parts = []
     parts << 'CREATE'
     parts << 'TEMPORARY' if temporary
-    parts << %{TABLE #{table_name} (}
+    parts << %{TABLE #{quoted_table_name} (}
     parts << columns.map(&:to_sql).join(', ')
     parts << ')'
     parts.join ' '
+  end
+
+  def quoted_table_name
+    CreateTable.quote_ident table_name
   end
 
   private
@@ -50,7 +65,7 @@ class CreateTable
 
   def parse!
     
-# line 54 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 69 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 class << self
 	attr_accessor :_create_table_parser_cond_keys
 	private :_create_table_parser_cond_keys, :_create_table_parser_cond_keys=
@@ -588,7 +603,7 @@ end
 self.create_table_parser_en_main = 1;
 
 
-# line 95 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 110 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
     
     parentheses = 0
@@ -596,18 +611,18 @@ self.create_table_parser_en_main = 1;
     pe = eof = data.length
 
     
-# line 600 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 615 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = create_table_parser_start
 end
 
-# line 102 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 117 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
 
     
-# line 611 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 626 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _cond, _conds, _widec, _acts, _nacts = nil
@@ -757,7 +772,7 @@ parentheses+=1		end
 # line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 parentheses-=1		end
-# line 761 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 776 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 	end
 	end
 	end
@@ -780,7 +795,7 @@ parentheses-=1		end
 end
 	end
 
-# line 105 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 120 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
   end
 end

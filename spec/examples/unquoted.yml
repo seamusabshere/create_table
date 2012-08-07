@@ -1,0 +1,27 @@
+name: Unquoted
+table_name: cats
+columns.length: 4
+columns.map(&:name):
+  - nickname
+  - birthday
+  - license_id
+  - price
+columns.map(&:options):
+  - CHARACTER VARYING(255)
+  - DATE
+  - INTEGER
+  - NUMERIC(5,2)
+input: |
+  CREATE TABLE cats (
+    nickname CHARACTER VARYING(255),
+    birthday DATE,
+    license_id INTEGER,
+    price NUMERIC(5,2)
+  )
+output: |
+  CREATE TABLE cats (
+    nickname CHARACTER VARYING(255),
+    birthday DATE,
+    license_id INTEGER,
+    price NUMERIC(5,2)
+  )

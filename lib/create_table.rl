@@ -54,6 +54,17 @@ require 'create_table/column'
 =end
 
 class CreateTable
+  class << self
+    def quote_ident(ident)
+      @reserved_words ||= (IO.readlines(File.expand_path('../create_table/mysql_reserved.txt', __FILE__)) + IO.readlines(File.expand_path('../create_table/pg_reserved.txt', __FILE__))).map(&:chomp).sort.uniq
+      if @reserved_words.include?(ident.upcase)
+        '"' + ident + '"'
+      else
+        ident
+      end
+    end
+  end
+
   attr_reader :data
   attr_reader :columns
 
@@ -78,10 +89,14 @@ class CreateTable
     parts = []
     parts << 'CREATE'
     parts << 'TEMPORARY' if temporary
-    parts << %{TABLE #{table_name} (}
+    parts << %{TABLE #{quoted_table_name} (}
     parts << columns.map(&:to_sql).join(', ')
     parts << ')'
     parts.join ' '
+  end
+
+  def quoted_table_name
+    CreateTable.quote_ident table_name
   end
 
   private

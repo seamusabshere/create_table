@@ -11,8 +11,12 @@ class CreateTable
       @options = options
     end
 
+    def quoted_name
+      CreateTable.quote_ident name
+    end
+
     def to_sql
-      [name, options].join ' '
+      [quoted_name, options].join ' '
     end
   end
 end

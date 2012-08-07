@@ -1,0 +1,23 @@
+name: Reserved words in table and column names
+table_name: where
+columns.length: 3
+columns.map(&:name):
+  - nickname
+  - "false"
+  - else
+columns.map(&:options):
+  - CHARACTER VARYING(255)
+  - CHARACTER VARYING(255)
+  - NUMERIC(5,2)
+input: |
+  CREATE TABLE "where" (
+    nickname CHARACTER VARYING(255),
+    "false" CHARACTER VARYING(255),
+    "else" NUMERIC(5,2)
+  )
+output: |
+  CREATE TABLE "where" (
+    nickname CHARACTER VARYING(255),
+    "false" CHARACTER VARYING(255),
+    "else" NUMERIC(5,2)
+  )
