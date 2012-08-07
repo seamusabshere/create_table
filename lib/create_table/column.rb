@@ -5,9 +5,14 @@ class CreateTable
 
     attr_accessor :options
     
-    def initialize(parent, name)
+    def initialize(parent, name, options = nil)
       @parent = parent
       @name = name
+      @options = options
+    end
+
+    def to_sql
+      [name, options].join ' '
     end
   end
 end

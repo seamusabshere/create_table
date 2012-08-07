@@ -5,59 +5,41 @@ require 'create_table/column'
 
 # MAKE SURE YOU'RE EDITING THE .RL FILE !!!
 
-
-# Abridged BNF for SQL99 from http://pivotalrb.rubyforge.org/svn/sql_parser/trunk/resources/sql99.bnf
 =begin
-<table definition> ::= CREATE [ <table scope> ] TABLE <table name> <table contents source>
 
-<table contents source> ::= <table element list>
-
-<table element list> ::= <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
-
-<table element> ::=
-    <column definition>
-  | <table constraint definition>
-  | <like clause>
-  | <self-referencing column specification>
-  | <column options>
-
-<column definition> ::=
-    <column name>
-    { <data type> | <domain name> }
-    [ <reference scope check> ]
-    [ <default clause> ]
-    [ <column constraint definition>... ]
-    [ <collate clause> ]
-
-<column name> ::= <identifier>
-
-## Skipped
-
-<table scope> ::= <global or local> TEMPORARY
-
-<global or local> ::= GLOBAL | LOCAL
-
-All that stuff about table name
-
-
-# line 87 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 53 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 
 =end
 
 class CreateTable
   attr_reader :data
-
   attr_reader :columns
+
   attr_accessor :table_name
+  attr_accessor :temporary
   
-  def initialize(sql)
-    @data = sql.unpack('c*')
+  def initialize(sql = nil)
     @columns = []
-    parse!
+    if sql
+      @data = sql.unpack('c*')
+      parse!
+    end
   end
 
-  def temporary?
-    @temporary_query == true
+  def add_column(name, options = '')
+    c = Column.new(self, name, options)
+    columns << c
+    c
+  end
+
+  def to_sql
+    parts = []
+    parts << 'CREATE'
+    parts << 'TEMPORARY' if temporary
+    parts << %{TABLE #{table_name} (}
+    parts << columns.map(&:to_sql).join(', ')
+    parts << ')'
+    parts.join ' '
   end
 
   private
@@ -68,12 +50,12 @@ class CreateTable
 
   def parse!
     
-# line 72 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 54 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 class << self
-	attr_accessor :_chopper_cond_keys
-	private :_chopper_cond_keys, :_chopper_cond_keys=
+	attr_accessor :_create_table_parser_cond_keys
+	private :_create_table_parser_cond_keys, :_create_table_parser_cond_keys=
 end
-self._chopper_cond_keys = [
+self._create_table_parser_cond_keys = [
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
@@ -87,10 +69,10 @@ self._chopper_cond_keys = [
 ]
 
 class << self
-	attr_accessor :_chopper_cond_key_spans
-	private :_chopper_cond_key_spans, :_chopper_cond_key_spans=
+	attr_accessor :_create_table_parser_cond_key_spans
+	private :_create_table_parser_cond_key_spans, :_create_table_parser_cond_key_spans=
 end
-self._chopper_cond_key_spans = [
+self._create_table_parser_cond_key_spans = [
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 4, 4, 0, 
@@ -99,19 +81,19 @@ self._chopper_cond_key_spans = [
 ]
 
 class << self
-	attr_accessor :_chopper_cond_spaces
-	private :_chopper_cond_spaces, :_chopper_cond_spaces=
+	attr_accessor :_create_table_parser_cond_spaces
+	private :_create_table_parser_cond_spaces, :_create_table_parser_cond_spaces=
 end
-self._chopper_cond_spaces = [
+self._create_table_parser_cond_spaces = [
 	1, 0, 0, 1, 1, 0, 0, 1, 
 	0
 ]
 
 class << self
-	attr_accessor :_chopper_cond_offsets
-	private :_chopper_cond_offsets, :_chopper_cond_offsets=
+	attr_accessor :_create_table_parser_cond_offsets
+	private :_create_table_parser_cond_offsets, :_create_table_parser_cond_offsets=
 end
-self._chopper_cond_offsets = [
+self._create_table_parser_cond_offsets = [
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 4, 8, 
@@ -120,10 +102,10 @@ self._chopper_cond_offsets = [
 ]
 
 class << self
-	attr_accessor :_chopper_trans_keys
-	private :_chopper_trans_keys, :_chopper_trans_keys=
+	attr_accessor :_create_table_parser_trans_keys
+	private :_create_table_parser_trans_keys, :_create_table_parser_trans_keys=
 end
-self._chopper_trans_keys = [
+self._create_table_parser_trans_keys = [
 	0, 0, 9, 99, 82, 114, 
 	69, 101, 65, 97, 84, 
 	116, 69, 101, 9, 32, 
@@ -141,10 +123,10 @@ self._chopper_trans_keys = [
 ]
 
 class << self
-	attr_accessor :_chopper_key_spans
-	private :_chopper_key_spans, :_chopper_key_spans=
+	attr_accessor :_create_table_parser_key_spans
+	private :_create_table_parser_key_spans, :_create_table_parser_key_spans=
 end
-self._chopper_key_spans = [
+self._create_table_parser_key_spans = [
 	0, 91, 33, 33, 33, 33, 33, 24, 
 	108, 37, 33, 33, 33, 24, 114, 58, 
 	114, 32, 114, 58, 114, 685, 685, 114, 
@@ -153,10 +135,10 @@ self._chopper_key_spans = [
 ]
 
 class << self
-	attr_accessor :_chopper_index_offsets
-	private :_chopper_index_offsets, :_chopper_index_offsets=
+	attr_accessor :_create_table_parser_index_offsets
+	private :_create_table_parser_index_offsets, :_create_table_parser_index_offsets=
 end
-self._chopper_index_offsets = [
+self._create_table_parser_index_offsets = [
 	0, 0, 92, 126, 160, 194, 228, 262, 
 	287, 396, 434, 468, 502, 536, 561, 676, 
 	735, 850, 883, 998, 1057, 1172, 1858, 2544, 
@@ -165,10 +147,10 @@ self._chopper_index_offsets = [
 ]
 
 class << self
-	attr_accessor :_chopper_indicies
-	private :_chopper_indicies, :_chopper_indicies=
+	attr_accessor :_create_table_parser_indicies
+	private :_create_table_parser_indicies, :_create_table_parser_indicies=
 end
-self._chopper_indicies = [
+self._create_table_parser_indicies = [
 	0, 0, 0, 0, 0, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 0, 
@@ -562,10 +544,10 @@ self._chopper_indicies = [
 ]
 
 class << self
-	attr_accessor :_chopper_trans_targs
-	private :_chopper_trans_targs, :_chopper_trans_targs=
+	attr_accessor :_create_table_parser_trans_targs
+	private :_create_table_parser_trans_targs, :_create_table_parser_trans_targs=
 end
-self._chopper_trans_targs = [
+self._create_table_parser_trans_targs = [
 	1, 0, 2, 3, 4, 5, 6, 7, 
 	8, 9, 10, 26, 11, 12, 13, 14, 
 	15, 16, 17, 25, 16, 17, 18, 19, 
@@ -575,10 +557,10 @@ self._chopper_trans_targs = [
 ]
 
 class << self
-	attr_accessor :_chopper_trans_actions
-	private :_chopper_trans_actions, :_chopper_trans_actions=
+	attr_accessor :_create_table_parser_trans_actions
+	private :_create_table_parser_trans_actions, :_create_table_parser_trans_actions=
 end
-self._chopper_trans_actions = [
+self._create_table_parser_trans_actions = [
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 1, 2, 2, 0, 0, 0, 0, 
@@ -588,25 +570,25 @@ self._chopper_trans_actions = [
 ]
 
 class << self
-	attr_accessor :chopper_start
+	attr_accessor :create_table_parser_start
 end
-self.chopper_start = 1;
+self.create_table_parser_start = 1;
 class << self
-	attr_accessor :chopper_first_final
+	attr_accessor :create_table_parser_first_final
 end
-self.chopper_first_final = 36;
+self.create_table_parser_first_final = 36;
 class << self
-	attr_accessor :chopper_error
+	attr_accessor :create_table_parser_error
 end
-self.chopper_error = 0;
+self.create_table_parser_error = 0;
 
 class << self
-	attr_accessor :chopper_en_main
+	attr_accessor :create_table_parser_en_main
 end
-self.chopper_en_main = 1;
+self.create_table_parser_en_main = 1;
 
 
-# line 114 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 95 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
     
     parentheses = 0
@@ -614,18 +596,18 @@ self.chopper_en_main = 1;
     pe = eof = data.length
 
     
-# line 618 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 600 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 begin
 	p ||= 0
 	pe ||= data.length
-	cs = chopper_start
+	cs = create_table_parser_start
 end
 
-# line 121 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 102 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
 
     
-# line 629 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 611 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _cond, _conds, _widec, _acts, _nacts = nil
@@ -649,13 +631,13 @@ begin
 	if _goto_level <= _resume
 	_widec = data[p].ord
 	_keys = cs << 1
-	_conds = _chopper_cond_offsets[cs]
-	_slen = _chopper_cond_key_spans[cs]
+	_conds = _create_table_parser_cond_offsets[cs]
+	_slen = _create_table_parser_cond_key_spans[cs]
 	_cond = if ( _slen > 0 && 
-		     _chopper_cond_keys[_keys] <= _widec &&
-		     _widec <= _chopper_cond_keys[_keys + 1]
+		     _create_table_parser_cond_keys[_keys] <= _widec &&
+		     _widec <= _create_table_parser_cond_keys[_keys + 1]
 		   ) then 
-			_chopper_cond_spaces[ _conds + _widec - _chopper_cond_keys[_keys] ]
+			_create_table_parser_cond_spaces[ _conds + _widec - _create_table_parser_cond_keys[_keys] ]
 		else
 		       0
 		end
@@ -663,7 +645,7 @@ begin
 	when 1 then
 		_widec = (128 + (data[p].ord - -128))
 		if ( 
-# line 71 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 
     r = (parentheses == 0)
     $stderr.puts "outside(#{r.inspect})" if ENV['VERBOSE'] == 'true'
@@ -673,57 +655,56 @@ begin
 end
 	end # _cond switch 
 	_keys = cs << 1
-	_inds = _chopper_index_offsets[cs]
-	_slen = _chopper_key_spans[cs]
+	_inds = _create_table_parser_index_offsets[cs]
+	_slen = _create_table_parser_key_spans[cs]
 	_trans = if (   _slen > 0 && 
-			_chopper_trans_keys[_keys] <= _widec && 
-			_widec <= _chopper_trans_keys[_keys + 1] 
+			_create_table_parser_trans_keys[_keys] <= _widec && 
+			_widec <= _create_table_parser_trans_keys[_keys + 1] 
 		    ) then
-			_chopper_indicies[ _inds + _widec - _chopper_trans_keys[_keys] ] 
+			_create_table_parser_indicies[ _inds + _widec - _create_table_parser_trans_keys[_keys] ] 
 		 else 
-			_chopper_indicies[ _inds + _slen ]
+			_create_table_parser_indicies[ _inds + _slen ]
 		 end
-	cs = _chopper_trans_targs[_trans]
-	if _chopper_trans_actions[_trans] != 0
-	case _chopper_trans_actions[_trans]
+	cs = _create_table_parser_trans_targs[_trans]
+	if _create_table_parser_trans_actions[_trans] != 0
+	case _create_table_parser_trans_actions[_trans]
 	when 1 then
-# line 43 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     s = p
   		end
 	when 2 then
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 13 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     self.table_name = read(s, p)
     s = nil
   		end
 	when 3 then
-# line 50 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 17 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "n_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   		end
 	when 4 then
-# line 54 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 21 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "n_e(#{s}, #{p}) - #{read(s, p).inspect}" if ENV['VERBOSE'] == 'true'
-    col = Column.new(self, read(s, p))
-    columns << col
+    col = add_column read(s, p)
     s = nil
   		end
 	when 5 then
-# line 60 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 26 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "o_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   		end
 	when 11 then
-# line 64 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 30 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "o_e(#{s}, #{p}) - #{read(s, p).inspect}" if ENV['VERBOSE'] == 'true'
@@ -731,25 +712,25 @@ end
     s = nil
   		end
 	when 9 then
-# line 79 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 parentheses+=1		end
 	when 10 then
-# line 79 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 parentheses-=1		end
 	when 12 then
-# line 80 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
-@temporary_query=true		end
+@temporary=true		end
 	when 8 then
-# line 60 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 26 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "o_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   		end
-# line 64 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 30 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "o_e(#{s}, #{p}) - #{read(s, p).inspect}" if ENV['VERBOSE'] == 'true'
@@ -757,26 +738,26 @@ parentheses-=1		end
     s = nil
   		end
 	when 6 then
-# line 60 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 26 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "o_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   		end
-# line 79 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 parentheses+=1		end
 	when 7 then
-# line 60 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 26 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 
     $stderr.puts "o_s(#{p})" if ENV['VERBOSE'] == 'true'
     s = p
   		end
-# line 79 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
 		begin
 parentheses-=1		end
-# line 780 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 761 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
 	end
 	end
 	end
@@ -799,7 +780,7 @@ parentheses-=1		end
 end
 	end
 
-# line 124 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 105 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
     # % (this fixes syntax highlighting)
   end
 end

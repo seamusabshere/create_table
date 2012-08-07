@@ -1,0 +1,28 @@
+# Abridged BNF for SQL99 from http://pivotalrb.rubyforge.org/svn/sql_parser/trunk/resources/sql99.bnf
+
+<table definition> ::= CREATE [ <table scope> ] TABLE <table name> <table contents source>
+
+<table scope> ::= <global or local> TEMPORARY
+
+<global or local> ::= GLOBAL | LOCAL
+
+<table contents source> ::= <table element list>
+
+<table element list> ::= <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
+
+<table element> ::=
+    <column definition>
+  | <table constraint definition>
+  | <like clause>
+  | <self-referencing column specification>
+  | <column options>
+
+<column definition> ::=
+    <column name>
+    { <data type> | <domain name> }
+    [ <reference scope check> ]
+    [ <default clause> ]
+    [ <column constraint definition>... ]
+    [ <collate clause> ]
+
+<column name> ::= <identifier>

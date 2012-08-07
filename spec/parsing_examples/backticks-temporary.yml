@@ -1,6 +1,6 @@
 name: MySQL-style backticks with TEMPORARY
 table_name: cats
-temporary?: true
+temporary: true
 columns.length: 4
 columns.map(&:name):
   - nickname

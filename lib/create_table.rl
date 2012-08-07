@@ -3,42 +3,9 @@ require 'create_table/column'
 
 # MAKE SURE YOU'RE EDITING THE .RL FILE !!!
 
-
-# Abridged BNF for SQL99 from http://pivotalrb.rubyforge.org/svn/sql_parser/trunk/resources/sql99.bnf
 =begin
-<table definition> ::= CREATE [ <table scope> ] TABLE <table name> <table contents source>
-
-<table contents source> ::= <table element list>
-
-<table element list> ::= <left paren> <table element> [ { <comma> <table element> }... ] <right paren>
-
-<table element> ::=
-    <column definition>
-  | <table constraint definition>
-  | <like clause>
-  | <self-referencing column specification>
-  | <column options>
-
-<column definition> ::=
-    <column name>
-    { <data type> | <domain name> }
-    [ <reference scope check> ]
-    [ <default clause> ]
-    [ <column constraint definition>... ]
-    [ <collate clause> ]
-
-<column name> ::= <identifier>
-
-## Skipped
-
-<table scope> ::= <global or local> TEMPORARY
-
-<global or local> ::= GLOBAL | LOCAL
-
-All that stuff about table name
-
 %%{
-  machine chopper;
+  machine create_table_parser;
 
   action StartTableName {
     s = p
@@ -53,8 +20,7 @@ All that stuff about table name
   }
   action EndColumnName {
     $stderr.puts "n_e(#{s}, #{p}) - #{read(s, p).inspect}" if ENV['VERBOSE'] == 'true'
-    col = Column.new(self, read(s, p))
-    columns << col
+    col = add_column read(s, p)
     s = nil
   }
   action StartColumnOptions {
@@ -77,7 +43,7 @@ All that stuff about table name
   ident               = [_a-zA-Z][_a-zA-Z0-9]*;
   quote_ident         = ["`];
   parentheses_counter = ( any | '(' @{parentheses+=1} | ')' @{parentheses-=1} )*;
-  create_table        = 'create'i space+ ('temporary'i space+ @{@temporary_query=true})? 'table'i;
+  create_table        = 'create'i space+ ('temporary'i space+ @{@temporary=true})? 'table'i;
   table_name          = quote_ident? ident >StartTableName %EndTableName quote_ident?;
   column_name         = quote_ident? ident >StartColumnName %EndColumnName quote_ident?;
   column_options      = any+ & parentheses_counter >StartColumnOptions %EndColumnOptions :> [,)] when NotEnclosedInParentheses;
@@ -89,18 +55,33 @@ All that stuff about table name
 
 class CreateTable
   attr_reader :data
-
   attr_reader :columns
+
   attr_accessor :table_name
+  attr_accessor :temporary
   
-  def initialize(sql)
-    @data = sql.unpack('c*')
+  def initialize(sql = nil)
     @columns = []
-    parse!
+    if sql
+      @data = sql.unpack('c*')
+      parse!
+    end
   end
 
-  def temporary?
-    @temporary_query == true
+  def add_column(name, options = '')
+    c = Column.new(self, name, options)
+    columns << c
+    c
+  end
+
+  def to_sql
+    parts = []
+    parts << 'CREATE'
+    parts << 'TEMPORARY' if temporary
+    parts << %{TABLE #{table_name} (}
+    parts << columns.map(&:to_sql).join(', ')
+    parts << ')'
+    parts.join ' '
   end
 
   private
