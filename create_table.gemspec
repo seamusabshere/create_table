@@ -19,4 +19,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec-expectations'
   gem.add_development_dependency 'rspec-mocks'
   gem.add_development_dependency 'posix-spawn'
+  gem.add_development_dependency 'activerecord'
+  gem.add_development_dependency 'mysql2'
 end
