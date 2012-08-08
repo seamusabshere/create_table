@@ -6,7 +6,7 @@ RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.rspec_opts = ['--format', 'documentation']
 end
 
-task :default => [:ragel, :spec]
+task :default => :spec
 
 task :ragel do
   require 'posix/spawn'
