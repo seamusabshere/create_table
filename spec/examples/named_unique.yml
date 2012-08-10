@@ -1,0 +1,50 @@
+_desc: Named unique indexes
+
+_input:
+  - |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2),
+      UNIQUE KEY uindex_cats_on_nickname (nickname)
+    )
+  - |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2),
+      UNIQUE INDEX uindex_cats_on_nickname (nickname)
+    )
+
+table_name: cats
+columns.length: 4
+columns.map(&:name):
+  - nickname
+  - birthday
+  - license_id
+  - price
+columns.map(&:options):
+  - CHARACTER VARYING(255)
+  - DATE
+  - INTEGER
+  - NUMERIC(5,2)
+indexes.length: 1
+indexes.first.unique: true
+indexes.map(&:column_names):
+  -
+    - nickname
+
+to_sql: &standard
+  - |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+  - CREATE UNIQUE INDEX uindex_cats_on_nickname ON cats (nickname)
+to_mysql: *standard
+to_postgresql: *standard
+to_sqlite3: *standard

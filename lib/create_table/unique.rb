@@ -1,13 +1,14 @@
 class CreateTable
-  class Unique
-    attr_reader :parent
-    attr_accessor :column_name
-    attr_accessor :name
-    
-    def initialize(parent, column_name = nil, name = nil)
-      @parent = parent
-      @column_name = column_name
-      @name = name
+  class Unique < Index
+    def unique
+      true
+    end
+
+    # won't ever be written
+    def to_sql
+      if name
+        super
+      end
     end
   end
 end

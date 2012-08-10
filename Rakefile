@@ -2,18 +2,25 @@
 require "bundler/gem_tasks"
 
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
+RSpec::Core::RakeTask.new(:rspec) do |spec|
   spec.rspec_opts = ['--format', 'documentation']
 end
 
-task :default => :spec
+require 'cucumber/rake/task'
+Cucumber::Rake::Task.new(:cucumber) do |t|
+  t.cucumber_opts = %w{--format pretty}
+end
+
+task :default => [:cucumber, :rspec]
 
 task :ragel do
   require 'posix/spawn'
-  $stderr.write "Recompiling ragel..."
-  if (child = POSIX::Spawn::Child.new('ragel', '-R', '-F1', File.expand_path('../lib/create_table.rl', __FILE__))).status.success?
-    $stderr.puts "succeeded."
-  else
-    raise "Error was #{child.err}"
+  Dir[File.expand_path('../lib/create_table/**/*.rl', __FILE__)].each do |path|
+    $stderr.write "Compiling Ragel from #{path}..."
+    if (child = POSIX::Spawn::Child.new('ragel', '-R', '-F1', path)).status.success?
+      $stderr.puts "succeeded."
+    else
+      raise "Error was #{child.err}"
+    end
   end
 end

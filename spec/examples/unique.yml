@@ -1,0 +1,47 @@
+_desc: Uniques
+
+_input:
+  - |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255) UNIQUE,
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+  - |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2),
+      UNIQUE (nickname)
+    )
+
+table_name: cats
+columns.length: 4
+columns.map(&:name):
+  - nickname
+  - birthday
+  - license_id
+  - price
+columns.map(&:options):
+  - CHARACTER VARYING(255) UNIQUE
+  - DATE
+  - INTEGER
+  - NUMERIC(5,2)
+indexes.length: 1
+indexes.first.unique: true
+indexes.map(&:column_names):
+  -
+    - nickname
+
+to_sql: &standard |
+  CREATE TABLE cats (
+    nickname CHARACTER VARYING(255) UNIQUE,
+    birthday DATE,
+    license_id INTEGER,
+    price NUMERIC(5,2)
+  )
+to_mysql: *standard
+to_postgresql: *standard
+to_sqlite3: *standard

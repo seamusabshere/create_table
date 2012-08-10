@@ -1,17 +1,6 @@
-name: Comments galore
-table_name: cats
-columns.length: 4
-columns.map(&:name):
-  - nickname
-  - birthday
-  - license_id
-  - price
-columns.map(&:options):
-  - CHARACTER VARYING(255)
-  - DATE
-  - INTEGER
-  - NUMERIC(5,2)
-input: |
+_desc: Comments with "/* */", including multiline
+
+_input: |
   /* b o yah */CREATE TABLE cats (/* daom */
     nickname /*yah
     see
@@ -27,10 +16,27 @@ input: |
   it
   end
   */
-output: |
+
+table_name: cats
+columns.length: 4
+columns.map(&:name):
+  - nickname
+  - birthday
+  - license_id
+  - price
+columns.map(&:options):
+  - CHARACTER VARYING(255)
+  - DATE
+  - INTEGER
+  - NUMERIC(5,2)
+
+to_sql: &standard |
   CREATE TABLE cats (
     nickname CHARACTER VARYING(255),
     birthday DATE,
     license_id INTEGER,
     price NUMERIC(5,2)
   )
+to_mysql: *standard
+to_postgresql: *standard
+to_sqlite3: *standard
