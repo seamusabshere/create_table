@@ -1,5 +1,5 @@
 
-# line 1 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 1 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 require 'create_table/version'
 require 'create_table/parser'
 require 'create_table/column_name_based_collection'
@@ -12,13 +12,13 @@ require 'create_table/unique'
 
 =begin
 
-# line 82 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 72 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 
 =end
 
 class CreateTable
   class << self
-    def quote(ident)
+    def quote_ident(ident)
       @reserved_words ||= (IO.readlines(File.expand_path('../create_table/mysql_reserved.txt', __FILE__)) + IO.readlines(File.expand_path('../create_table/pg_reserved.txt', __FILE__))).map(&:chomp).sort.uniq
       if @reserved_words.include?(ident.upcase)
         QUOTE_IDENT + ident + QUOTE_IDENT
@@ -130,13 +130,13 @@ class CreateTable
   end
 
   def quoted_table_name
-    CreateTable.quote table_name
+    CreateTable.quote_ident table_name
   end
 
   def parse(str)
     data = Parser.remove_comments(str).unpack('c*')
     
-# line 140 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 140 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 class << self
 	attr_accessor :_parser_cond_keys
 	private :_parser_cond_keys, :_parser_cond_keys=
@@ -16639,23 +16639,23 @@ end
 self.parser_en_main = 1;
 
 
-# line 205 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 195 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
-    parens = 0
+    parens = quote_value = 0
     p = item = 0
     pe = eof = data.length
     
-# line 16649 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 16649 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 210 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 200 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     
-# line 16659 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 16659 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _cond, _conds, _widec, _acts, _nacts = nil
@@ -16693,11 +16693,9 @@ begin
 	when 1 then
 		_widec = (128 + (data[p].ord - -128))
 		if ( 
-# line 62 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 54 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 
-    r = (parens == 0)
-    $stderr.puts "outside => #{r.inspect} (parens = #{parens.inspect})" if ENV['VERBOSE'] == 'true'
-    r
+    parens == 0
    ) then 
 			  _widec += 256
 end
@@ -16717,469 +16715,416 @@ end
 	if _parser_trans_actions[_trans] != 0
 	case _parser_trans_actions[_trans]
 	when 4 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens+=1		end
 	when 5 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 	when 1 then
-# line 17 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 17 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
     start_table_name = p
   		end
 	when 2 then
-# line 20 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 20 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
     self.table_name = read(data, start_table_name, p)
     start_table_name = nil
   		end
 	when 3 then
-# line 24 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 24 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartColumn(#{p})" if ENV['VERBOSE'] == 'true'
     start_column = p
   		end
 	when 6 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
 	when 17 then
-# line 33 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 31 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartPrimaryKey(#{p})" if ENV['VERBOSE'] == 'true'
     start_primary_key = p
   		end
 	when 18 then
-# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 34 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   		end
 	when 21 then
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
 	when 24 then
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
 	when 7 then
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
 	when 10 then
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 41 then
-# line 68 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 58 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 @temporary=true		end
 	when 37 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens+=1		end
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
 	when 13 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens+=1		end
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
 	when 35 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 34 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   		end
 	when 38 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
 	when 25 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
 	when 14 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
 	when 11 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 36 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 34 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   		end
 	when 40 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
 	when 26 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
 	when 16 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
 	when 12 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 19 then
-# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 34 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 	when 34 then
-# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 34 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   		end
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
 	when 20 then
-# line 37 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 34 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 22 then
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens+=1		end
 	when 23 then
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 	when 28 then
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 33 then
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
 	when 29 then
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 8 then
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens+=1		end
 	when 9 then
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 	when 30 then
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 39 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 	when 31 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 15 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   		end
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 	when 27 then
-# line 42 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 38 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 55 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   		end
 	when 32 then
-# line 46 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 41 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   		end
-# line 51 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 45 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   		end
-# line 7 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 17183 "/Users/seamusabshere/code/create_table/lib/create_table.rb"
+# line 17128 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 	end
 	end
 	end
@@ -17202,7 +17147,7 @@ parens-=1		end
 end
 	end
 
-# line 212 "/Users/seamusabshere/code/create_table/lib/create_table.rl"
+# line 202 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     self
   end

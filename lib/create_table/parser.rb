@@ -8,7 +8,7 @@ class CreateTable
     SQL_COMMENT = %r{/\*(?:.|[\r\n])*?\*/}m
 
     def read(data, s, p)
-      data[s, p-s].pack('c*').strip
+        data[s...p].pack('c*')
     end
 
     # you still have to put this in the body of your file
@@ -16,7 +16,7 @@ class CreateTable
     #   data = Parser.remove_comments(str).unpack('c*')
     #   %% write data;
     #   # % (this fixes syntax highlighting)
-    #   parens = 0
+    #   parens = quote_value = 0
     #   p = item = 0
     #   pe = eof = data.length
     #   %% write init;

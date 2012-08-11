@@ -16,7 +16,9 @@ end
 
 Then /(.*) should be (.*)/ do |method_id, ref|
   case ref
-  when ''
+  when /^"/
+    ref = ref[1..-2]
+  when 'nil'
     ref = nil
   when 'false'
     ref = false

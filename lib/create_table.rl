@@ -22,61 +22,51 @@ require 'create_table/unique'
     start_table_name = nil
   }
   action StartColumn {
-    $stderr.puts "StartColumn(#{p})" if ENV['VERBOSE'] == 'true'
     start_column = p
   }
   action EndColumn {
-    $stderr.puts "EndColumn(#{start_column}, #{p}) - #{read(data, start_column, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_column read(data, start_column, p)
     start_column = nil
   }
   action StartPrimaryKey {
-    $stderr.puts "StartPrimaryKey(#{p})" if ENV['VERBOSE'] == 'true'
     start_primary_key = p
   }
   action EndPrimaryKey {
-    $stderr.puts "EndPrimaryKey(#{start_primary_key}, #{p}) - #{read(data, start_primary_key, p).inspect}" if ENV['VERBOSE'] == 'true'
     self.primary_key = read(data, start_primary_key, p)
     start_primary_key = nil
   }
   action StartUnique {
-    $stderr.puts "StartUnique(#{p})" if ENV['VERBOSE'] == 'true'
     start_unique = p
   }
   action EndUnique {
-    $stderr.puts "EndUnique(#{start_unique}, #{p}) - #{read(data, start_unique, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_unique read(data, start_unique, p)
     start_unique = nil
   }
   action StartIndex {
-    $stderr.puts "StartIndex(#{p})" if ENV['VERBOSE'] == 'true'
     start_index = p
   }
   action EndIndex {
-    $stderr.puts "EndIndex(#{start_index}, #{p}) - #{read(data, start_index, p).inspect}" if ENV['VERBOSE'] == 'true'
     parse_index read(data, start_index, p)
     start_index = nil
   }
 
   # conditions
   action NotEnclosedInParentheses {
-    r = (parens == 0)
-    $stderr.puts "outside => #{r.inspect} (parens = #{parens.inspect})" if ENV['VERBOSE'] == 'true'
-    r
+    parens == 0
   }
 
   create_table           = 'create'i space+ ('temporary'i space+ @{@temporary=true})? 'table'i;
   
-  table_name             = quote ident >StartTableName %EndTableName quote;
+  table_name             = quote_ident ident >StartTableName %EndTableName quote_ident;
   
-  column_name            = quote (ident - ('index'i | 'primary'i | 'unique'i | 'key'i)) >StartColumn quote;
-  column_options         = options %EndColumn :> [,)] when NotEnclosedInParentheses;
+  column_name            = quote_ident (ident - ('index'i | 'primary'i | 'unique'i | 'key'i)) >StartColumn quote_ident;
+  column_options         = with_parens %EndColumn :> [,)] when NotEnclosedInParentheses;
   column_definition      = space* column_name space+ column_options;
   
-  primary_key_definition = space* 'primary'i space+ 'key'i lparens quote ident >StartPrimaryKey %EndPrimaryKey quote rparens :> [,)];
+  primary_key_definition = space* 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
 
-  unique_definition      = space* 'unique'i (space+ ('key'i | 'index'i))? options >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
-  index_definition       = space* ('index'i | 'key'i) options >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
+  unique_definition      = space* 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
+  index_definition       = space* ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
 
   main := space* create_table space+ table_name space+ lparens (column_definition | primary_key_definition | unique_definition | index_definition)+ rparens;
 }%%
@@ -84,7 +74,7 @@ require 'create_table/unique'
 
 class CreateTable
   class << self
-    def quote(ident)
+    def quote_ident(ident)
       @reserved_words ||= (IO.readlines(File.expand_path('../create_table/mysql_reserved.txt', __FILE__)) + IO.readlines(File.expand_path('../create_table/pg_reserved.txt', __FILE__))).map(&:chomp).sort.uniq
       if @reserved_words.include?(ident.upcase)
         QUOTE_IDENT + ident + QUOTE_IDENT
@@ -196,14 +186,14 @@ class CreateTable
   end
 
   def quoted_table_name
-    CreateTable.quote table_name
+    CreateTable.quote_ident table_name
   end
 
   def parse(str)
     data = Parser.remove_comments(str).unpack('c*')
     %% write data;
     # % (this fixes syntax highlighting)
-    parens = 0
+    parens = quote_value = 0
     p = item = 0
     pe = eof = data.length
     %% write init;

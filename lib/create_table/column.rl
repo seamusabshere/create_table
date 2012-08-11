@@ -15,62 +15,92 @@
   }
 
   action StartDataType {
-    $stderr.puts "StartDataType(#{p})" if ENV['VERBOSE'] == 'true'
     start_data_type = p
   }
   action EndDataType {
     end_data_type ||= p
-    $stderr.puts "EndDataType(#{start_data_type}, #{end_data_type}, p=#{p}) - #{read(data, start_data_type, end_data_type).inspect}" if ENV['VERBOSE'] == 'true'
     self.data_type = read(data, start_data_type, end_data_type)
   }
 
-  action StartPrimaryKey {
-    $stderr.puts "StartPrimaryKey(#{p})" if ENV['VERBOSE'] == 'true'
-    start_primary_key = p
+  action MarkPrimaryKey {
+    mark_primary_key = p - 1
   }
   action PrimaryKey {
-    $stderr.puts "PrimaryKey(#{p})" if ENV['VERBOSE'] == 'true'
     primary_key!
-    end_data_type ||= start_primary_key
+    end_data_type ||= mark_primary_key
   }
 
-  action StartUnique {
-    $stderr.puts "StartUnique(p=#{p})" if ENV['VERBOSE'] == 'true'
-    start_unique = p - 4
+  action MarkUnique {
+    mark_unique = p - 5
   }
   action Unique {
-    $stderr.puts "Unique(p=#{p})" if ENV['VERBOSE'] == 'true'
     unique!
-    end_data_type ||= start_unique
+    end_data_type ||= mark_unique
   }
 
-  action StartAutoincrement {
-    $stderr.puts "StartAutoincrement(#{p})" if ENV['VERBOSE'] == 'true'
-    start_autoincrement = p
+  action MarkAutoincrement {
+    mark_autoincrement = p
   }
   action Autoincrement {
-    $stderr.puts "Autoincrement(#{p})" if ENV['VERBOSE'] == 'true'
     autoincrement!
-    end_data_type ||= start_autoincrement
+    end_data_type ||= mark_autoincrement
   }
 
-  name            = quote ident >StartName %EndName quote;
-  primary_key     = ('primary'i space+ 'key'i) >StartPrimaryKey @PrimaryKey;
-  autoincrement   = ('auto'i '_'? 'increment'i) >StartAutoincrement @Autoincrement;
-  unique          = 'uniq'i %StartUnique 'ue'i @Unique;
-  data_type       = any+ space*;
+  action MarkNotNull {
+    mark_not_null = p - 4
+  }
+  action Null {
+    mark_not_null ||= nil
+    if mark_not_null
+      self.null = false
+      end_data_type ||= mark_not_null
+    else
+      self.null = true
+      end_data_type ||= p - 4
+    end
+    mark_not_null = nil
+  }
 
-  main := space* name space+ data_type >StartDataType primary_key? unique? autoincrement? %EndDataType;
+  action MarkDefault {
+    mark_default = p - 1
+  }
+  action StartDefault {
+    start_default = p
+  }
+  action EndDefault {
+    #end_default = (p < start_default) ? p : p - 1
+    self.default = read(data, start_default, p).gsub("''", "'")
+    end_data_type ||= mark_default
+    start_default = nil
+  }
+
+  action EvenNumbersOfQuoteValue {
+    (quote_value % 2) == 0
+  }
+
+  name            = quote_ident ident >StartName %EndName quote_ident;
+  primary_key     = ('primary'i space+ 'key'i) >MarkPrimaryKey @PrimaryKey;
+  autoincrement   = ('auto'i '_'? 'increment'i) >MarkAutoincrement @Autoincrement;
+  unique          = 'uniq'i %MarkUnique 'ue'i @Unique;
+  default         = ('default'i space+ quote_value?) >MarkDefault ((any+ >StartDefault %EndDefault) & quote_value_counter) :> (quote_value? | space*) when EvenNumbersOfQuoteValue;
+  _null           = ('not'i %MarkNotNull)? space+ 'null'i @Null;
+  data_type       = any+;
+
+  main := space* name space+ data_type >StartDataType _null? default? primary_key? unique? autoincrement? %EndDataType;
 }%%
 =end
 
 class CreateTable
   class Column
+    BLANK_STRING = ''
+
     include Parser
 
     attr_reader :parent
     attr_reader :name
     attr_accessor :data_type
+    attr_writer :default
+    attr_writer :null
 
     def initialize(parent)
       @parent = parent
@@ -85,7 +115,7 @@ class CreateTable
       data = Parser.remove_comments(str).unpack('c*')
       %% write data;
       # % (this fixes syntax highlighting)
-      parens = 0
+      parens = quote_value = 0
       p = item = 0
       pe = eof = data.length
       %% write init;
@@ -93,6 +123,24 @@ class CreateTable
       %% write exec;
       # % (this fixes syntax highlighting)
       self
+    end
+
+    def default
+      if defined?(@default)
+        @default
+      elsif primary_key and data_type =~ /char/i
+        BLANK_STRING
+      end
+    end
+
+    def null
+      if defined?(@null)
+        @null
+      elsif primary_key
+        false
+      else
+        true
+      end
     end
 
     def primary_key
@@ -133,7 +181,7 @@ class CreateTable
     end
 
     def quoted_name
-      CreateTable.quote name
+      CreateTable.quote_ident name
     end
 
     def to_sql

@@ -6,9 +6,9 @@ describe CreateTable do
       @c = CreateTable.new(%{
         CREATE TABLE cats (
           nickname CHARACTER VARYING(255),
-          birthday DATE,
-          license_id INTEGER,
-          price NUMERIC(5,2),
+          birthday DATE DEFAULT '2005-01-01' NOT NULL,
+          license_id INTEGER NULL,
+          price NUMERIC(5,2) DEFAULT '14.50',
           PRIMARY KEY (nickname),
           UNIQUE KEY uindex_cats_on_license_id (license_id),
           INDEX index_cats_on_price (price)
@@ -25,7 +25,16 @@ describe CreateTable do
       @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
     end
     it "gets column options" do
-      @c.columns.map(&:options).should == ['CHARACTER VARYING(255) PRIMARY KEY', 'DATE', 'INTEGER', 'NUMERIC(5,2)']
+      # @c.columns.map(&:options).should == ['CHARACTER VARYING(255) PRIMARY KEY', "DATE DEFAULT '2005-01-01' NOT NULL", 'INTEGER', "NUMERIC(5,2) DEFAULT '14.50'"]
+    end
+    it "gets data types" do
+      @c.columns.map(&:data_type).should == ['CHARACTER VARYING(255)', "DATE", 'INTEGER', "NUMERIC(5,2)"]
+    end
+    it "gets defaults" do
+      @c.columns.map(&:default).should == [%{}, %{2005-01-01}, nil, %{14.50}]
+    end
+    it "gets [not] null" do
+      @c.columns.map(&:null).should == [false, false, true, true]
     end
     it "gets primary key" do
       @c.primary_key.column_names.should == ['nickname']

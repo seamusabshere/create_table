@@ -1,10 +1,10 @@
 
-# line 1 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 1 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 # MAKE SURE YOU'RE EDITING THE .RL FILE !!!
 
 =begin
 
-# line 30 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 28 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 
 =end
 
@@ -29,7 +29,7 @@ class CreateTable
     def parse(str)
       data = Parser.remove_comments(str).unpack('c*')
       
-# line 33 "/Users/seamusabshere/code/create_table/lib/create_table/index.rb"
+# line 33 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 class << self
 	attr_accessor :_parser_trans_keys
 	private :_parser_trans_keys, :_parser_trans_keys=
@@ -196,23 +196,23 @@ end
 self.parser_en_main = 1;
 
 
-# line 54 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 52 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
-      parens = 0
+      parens = quote_value = 0
       p = item = 0
       pe = eof = data.length
       
-# line 206 "/Users/seamusabshere/code/create_table/lib/create_table/index.rb"
+# line 206 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 59 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 57 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       
-# line 216 "/Users/seamusabshere/code/create_table/lib/create_table/index.rb"
+# line 216 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _acts, _nacts = nil
@@ -249,34 +249,32 @@ begin
 	if _parser_trans_actions[_trans] != 0
 	case _parser_trans_actions[_trans]
 	when 1 then
-# line 9 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 9 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
     start_name = p
   		end
 	when 2 then
-# line 12 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 12 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
     self.name = read(data, start_name, p)
     start_name = nil
   		end
 	when 3 then
-# line 16 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 16 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
-    $stderr.puts "StartColumnName(#{p})" if ENV['VERBOSE'] == 'true'
     start_column_name = p
   		end
 	when 4 then
-# line 20 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 19 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
-    $stderr.puts "EndColumnName(#{start_column_name}, #{p}) - #{read(data, start_column_name, p).inspect}" if ENV['VERBOSE'] == 'true'
     column_names << read(data, start_column_name, p)
     start_column_name = nil
   		end
-# line 280 "/Users/seamusabshere/code/create_table/lib/create_table/index.rb"
+# line 278 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 	end
 	end
 	end
@@ -299,7 +297,7 @@ begin
 end
 	end
 
-# line 61 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl"
+# line 59 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       self
     end
@@ -326,7 +324,7 @@ end
 
     def quoted_name
       if name
-        CreateTable.quote name
+        CreateTable.quote_ident name
       else
         "index_#{parent.table_name}_on_#{name}"
       end
@@ -334,7 +332,7 @@ end
 
     def quoted_column_names
       column_names.map do |column_name|
-        CreateTable.quote column_name
+        CreateTable.quote_ident column_name
       end.join(', ')
     end
   end

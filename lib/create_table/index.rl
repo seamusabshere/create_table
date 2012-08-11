@@ -14,17 +14,15 @@
     start_name = nil
   }
   action StartColumnName {
-    $stderr.puts "StartColumnName(#{p})" if ENV['VERBOSE'] == 'true'
     start_column_name = p
   }
   action EndColumnName {
-    $stderr.puts "EndColumnName(#{start_column_name}, #{p}) - #{read(data, start_column_name, p).inspect}" if ENV['VERBOSE'] == 'true'
     column_names << read(data, start_column_name, p)
     start_column_name = nil
   }
 
-  name                   = space* quote ident >StartName %EndName quote;
-  column_name            = space* quote ident >StartColumnName %EndColumnName quote :> [,)];
+  name                   = space* quote_ident ident >StartName %EndName quote_ident;
+  column_name            = space* quote_ident ident >StartColumnName %EndColumnName quote_ident :> [,)];
 
   main := name? lparens column_name+ rparens;
 }%%
@@ -52,7 +50,7 @@ class CreateTable
       data = Parser.remove_comments(str).unpack('c*')
       %% write data;
       # % (this fixes syntax highlighting)
-      parens = 0
+      parens = quote_value = 0
       p = item = 0
       pe = eof = data.length
       %% write init;
@@ -84,7 +82,7 @@ class CreateTable
 
     def quoted_name
       if name
-        CreateTable.quote name
+        CreateTable.quote_ident name
       else
         "index_#{parent.table_name}_on_#{name}"
       end
@@ -92,7 +90,7 @@ class CreateTable
 
     def quoted_column_names
       column_names.map do |column_name|
-        CreateTable.quote column_name
+        CreateTable.quote_ident column_name
       end.join(', ')
     end
   end
