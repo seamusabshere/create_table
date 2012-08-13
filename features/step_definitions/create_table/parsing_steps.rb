@@ -24,6 +24,8 @@ Then /(.*) should be (.*)/ do |method_id, ref|
     ref = false
   when 'true'
     ref = true
+  else
+    ref.strip
   end
 
   v = @object.send(method_id)
