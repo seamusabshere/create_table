@@ -68,21 +68,24 @@
     start_default = p
   }
   action EndDefault {
-    #end_default = (p < start_default) ? p : p - 1
-    self.default = read(data, start_default, p).gsub("''", "'")
+    self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
     end_data_type ||= mark_default
     start_default = nil
   }
 
-  action EvenNumbersOfQuoteValue {
+  action NotEnclosedInQuotes {
     (quote_value % 2) == 0
   }
+  action EnclosedInQuotes {
+    (quote_value % 2) == 1
+  }
+
 
   name            = quote_ident ident >StartName %EndName quote_ident;
   primary_key     = ('primary'i space+ 'key'i) >MarkPrimaryKey @PrimaryKey;
   autoincrement   = ('auto'i '_'? 'increment'i) >MarkAutoincrement @Autoincrement;
   unique          = 'uniq'i %MarkUnique 'ue'i @Unique;
-  default         = ('default'i space+ quote_value?) >MarkDefault ((any+ >StartDefault %EndDefault) & quote_value_counter) :> (quote_value? | space*) when EvenNumbersOfQuoteValue;
+  default         = (('default'i space+ quote_value?) & quote_value_counter) >MarkDefault ((any+ >StartDefault %EndDefault) & quote_value_counter) :> (space* when NotEnclosedInQuotes) | (quote_value when EnclosedInQuotes);
   _null           = ('not'i %MarkNotNull)? space+ 'null'i @Null;
   data_type       = any+;
 

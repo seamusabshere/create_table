@@ -26,7 +26,12 @@ Feature: Parsing
     | "foo" INTEGER DEFAULT 4                                 | foo  | INTEGER                  | false       | false  | false         | true  | 4            |
     | "foo" INTEGER DEFAULT '4'                               | foo  | INTEGER                  | false       | false  | false         | true  | 4            |
     | "foo" CHARACTER VARYING(255) DEFAULT ' z x y '          | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z x y "    |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y'       | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z 'x 'y"   |
     | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y '      | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z 'x 'y "  |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y"'      | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z 'x 'y""  |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z x y "          | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z x y "    |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y"       | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z 'x 'y"   |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y "      | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true  | " z 'x 'y "  |
 
   Scenario Outline: parsing indexes
     Given index definition <index_definition>
