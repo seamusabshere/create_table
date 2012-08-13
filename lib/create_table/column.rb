@@ -30,7 +30,7 @@ class CreateTable
     end
 
     def parse(str)
-      data = Parser.remove_comments(str).unpack('c*')
+      data = Parser.remove_comments(str).strip.unpack('c*')
       
 # line 36 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 class << self
@@ -9347,7 +9347,7 @@ quote_value+=1		end
 # line 41 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    mark_autoincrement = p
+    mark_autoincrement = p - 1
   		end
 	when 4 then
 # line 44 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
@@ -9425,7 +9425,7 @@ quote_value+=1		end
 # line 41 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    mark_autoincrement = p
+    mark_autoincrement = p - 1
   		end
 	when 28 then
 # line 17 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
@@ -9491,7 +9491,7 @@ quote_value+=1		end
 # line 41 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    mark_autoincrement = p
+    mark_autoincrement = p - 1
   		end
 	when 21 then
 # line 70 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
@@ -9530,7 +9530,7 @@ quote_value+=1		end
 # line 41 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    mark_autoincrement = p
+    mark_autoincrement = p - 1
   		end
 # line 9536 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 	end

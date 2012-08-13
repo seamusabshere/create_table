@@ -39,7 +39,7 @@
   }
 
   action MarkAutoincrement {
-    mark_autoincrement = p
+    mark_autoincrement = p - 1
   }
   action Autoincrement {
     autoincrement!
@@ -115,7 +115,7 @@ class CreateTable
     end
 
     def parse(str)
-      data = Parser.remove_comments(str).unpack('c*')
+      data = Parser.remove_comments(str).strip.unpack('c*')
       %% write data;
       # % (this fixes syntax highlighting)
       parens = quote_value = 0
