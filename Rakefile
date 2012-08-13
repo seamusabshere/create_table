@@ -21,7 +21,7 @@ task :ragel do
     next if File.basename(path).include?('common')
     $stderr.write "#{File.basename(path)}:"
     debugged = "#{path}.tmp"
-    if ENV['DEBUG'] == 'true'
+    if ENV['VERBOSE'] == 'true'
       $stderr.write " adding debugging to #{File.basename(debugged)}..."
       lines = IO.readlines(path).map(&:chomp)
       File.open(debugged, 'w') do |f|
