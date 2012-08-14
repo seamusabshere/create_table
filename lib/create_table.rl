@@ -63,7 +63,7 @@ require 'create_table/unique'
   column_options         = with_parens %EndColumn :> [,)] when NotEnclosedInParentheses;
   column_definition      = space* column_name space+ column_options;
 
-  constraint_keyword     = space* 'constraint'i? space*;  
+  constraint_keyword     = space* ('constraint'i space+)?;
   primary_key_definition = constraint_keyword 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
   unique_definition      = constraint_keyword 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
   index_definition       = constraint_keyword ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
