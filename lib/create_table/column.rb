@@ -4,7 +4,7 @@
 
 =begin
 
-# line 93 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 68 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 
 =end
 
@@ -810,7 +810,7 @@ end
 self.parser_en_main = 1;
 
 
-# line 199 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 174 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       parens = quote_value = 0
       p = item = 0
@@ -823,7 +823,7 @@ begin
 	cs = parser_start
 end
 
-# line 204 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 179 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       
 # line 830 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
@@ -865,16 +865,12 @@ begin
 				case _parser_cond_spaces[_parser_cond_offsets[cs] + ((_mid - _keys)>>1)]
 	when 0 then	_widec = 128+ (data[p].ord - -128)
 	_widec += 256 if ( 
-# line 76 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
-
-    (quote_value % 2) == 0
-   )
+# line 56 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+ (quote_value % 2) == 0  )
 	when 1 then	_widec = 640+ (data[p].ord - -128)
 	_widec += 256 if ( 
-# line 79 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
-
-    (quote_value % 2) == 1
-   )
+# line 57 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+ (quote_value % 2) == 1  )
 				end # case
 			end
 		end # loop
@@ -945,102 +941,81 @@ quote_value+=1		end
 when 1 then
 # line 9 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
-
-    start_name = p
-  		end
+ start_name = p 		end
 when 2 then
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+		begin
+ self.name = read(data, start_name, p) 		end
+when 3 then
 # line 12 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
-
-    self.name = read(data, start_name, p)
-    start_name = nil
-  		end
-when 3 then
-# line 17 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+ start_data_type = p 		end
+when 5 then
+# line 18 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+		begin
+ mark_primary_key = p - 1 		end
+when 6 then
+# line 19 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    start_data_type = p
-  		end
-when 5 then
+                             primary_key!
+                             end_data_type ||= mark_primary_key
+                           		end
+when 7 then
+# line 24 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+		begin
+ mark_unique = p - 5 		end
+when 8 then
 # line 25 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    mark_primary_key = p - 1
-  		end
-when 6 then
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+                             unique!
+                             end_data_type ||= mark_unique
+                           		end
+when 9 then
+# line 30 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+		begin
+ mark_autoincrement = p - 1 		end
+when 10 then
+# line 31 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    primary_key!
-    end_data_type ||= mark_primary_key
-  		end
-when 7 then
-# line 33 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
-		begin
-
-    mark_unique = p - 5
-  		end
-when 8 then
+                             autoincrement!
+                             end_data_type ||= mark_autoincrement
+                           		end
+when 11 then
 # line 36 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
-
-    unique!
-    end_data_type ||= mark_unique
-  		end
-when 9 then
-# line 41 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+ mark_not_null = p - 4 		end
+when 12 then
+# line 37 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    mark_autoincrement = p - 1
-  		end
-when 10 then
-# line 44 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+                             mark_not_null ||= nil
+                             if mark_not_null
+                               self.null = false
+                               end_data_type ||= mark_not_null
+                             else
+                               self.null = true
+                               end_data_type ||= p - 4
+                             end
+                           		end
+when 13 then
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
-
-    autoincrement!
-    end_data_type ||= mark_autoincrement
-  		end
-when 11 then
+ mark_default = p - 1 		end
+when 14 then
 # line 49 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
-
-    mark_not_null = p - 4
-  		end
-when 12 then
-# line 52 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
-		begin
-
-    mark_not_null ||= nil
-    if mark_not_null
-      self.null = false
-      end_data_type ||= mark_not_null
-    else
-      self.null = true
-      end_data_type ||= p - 4
-    end
-    mark_not_null = nil
-  		end
-when 13 then
-# line 64 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
-		begin
-
-    mark_default = p - 1
-  		end
-when 14 then
-# line 67 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
-		begin
-
-    start_default = p
-  		end
+ start_default = p 		end
 when 15 then
-# line 70 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 50 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
-    end_data_type ||= mark_default
-    start_default = nil
-  		end
-# line 1044 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+                             self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
+                             end_data_type ||= mark_default
+                           		end
+# line 1019 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 			end # action switch
 		end
 	end
@@ -1069,21 +1044,20 @@ when 15 then
 		__acts += 1
 		case _parser_actions[__acts - 1]
 when 4 then
-# line 20 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 13 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    end_data_type ||= p
-    self.data_type = read(data, start_data_type, end_data_type)
-  		end
+                             end_data_type ||= p
+                             self.data_type = read(data, start_data_type, end_data_type)
+                           		end
 when 15 then
-# line 70 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 50 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
 
-    self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
-    end_data_type ||= mark_default
-    start_default = nil
-  		end
-# line 1087 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+                             self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
+                             end_data_type ||= mark_default
+                           		end
+# line 1061 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -1097,7 +1071,7 @@ end
 	end
 	end
 
-# line 206 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 181 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       self
     end

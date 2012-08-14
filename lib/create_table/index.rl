@@ -6,20 +6,11 @@
 
   include "common.rl";
 
-  action StartName {
-    start_name = p
-  }
-  action EndName {
-    self.name = read(data, start_name, p)
-    start_name = nil
-  }
-  action StartColumnName {
-    start_column_name = p
-  }
-  action EndColumnName {
-    column_names << read(data, start_column_name, p)
-    start_column_name = nil
-  }
+  action StartName        { start_name = p                                    }
+  action EndName          { self.name = read(data, start_name, p)             }
+
+  action StartColumnName  { start_column_name = p                             }
+  action EndColumnName    { column_names << read(data, start_column_name, p)  }
 
   name                   = space* quote_ident ident >StartName %EndName quote_ident;
   column_name            = space* quote_ident ident >StartColumnName %EndColumnName quote_ident :> [,)];

@@ -4,7 +4,7 @@
 
 =begin
 
-# line 28 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
+# line 19 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 
 =end
 
@@ -143,7 +143,7 @@ end
 self.parser_en_main = 1;
 
 
-# line 52 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
+# line 43 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       parens = quote_value = 0
       p = item = 0
@@ -156,7 +156,7 @@ begin
 	cs = parser_start
 end
 
-# line 57 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
+# line 48 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       
 # line 163 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
@@ -243,30 +243,20 @@ begin
 when 0 then
 # line 9 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
-
-    start_name = p
-  		end
+ start_name = p                                    		end
 when 1 then
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
+		begin
+ self.name = read(data, start_name, p)             		end
+when 2 then
 # line 12 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
-
-    self.name = read(data, start_name, p)
-    start_name = nil
-  		end
-when 2 then
-# line 16 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
-		begin
-
-    start_column_name = p
-  		end
+ start_column_name = p                             		end
 when 3 then
-# line 19 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
+# line 13 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
-
-    column_names << read(data, start_column_name, p)
-    start_column_name = nil
-  		end
-# line 270 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
+ column_names << read(data, start_column_name, p)  		end
+# line 260 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 			end # action switch
 		end
 	end
@@ -293,7 +283,7 @@ when 3 then
 	end
 	end
 
-# line 59 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
+# line 50 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       self
     end

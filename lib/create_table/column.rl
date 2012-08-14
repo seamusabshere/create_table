@@ -6,80 +6,55 @@
 
   include "common.rl";
 
-  action StartName {
-    start_name = p
-  }
-  action EndName {
-    self.name = read(data, start_name, p)
-    start_name = nil
-  }
+  action StartName         { start_name = p }
+  action EndName           { self.name = read(data, start_name, p) }
 
-  action StartDataType {
-    start_data_type = p
-  }
-  action EndDataType {
-    end_data_type ||= p
-    self.data_type = read(data, start_data_type, end_data_type)
-  }
+  action StartDataType     { start_data_type = p }
+  action EndDataType       {
+                             end_data_type ||= p
+                             self.data_type = read(data, start_data_type, end_data_type)
+                           }
 
-  action MarkPrimaryKey {
-    mark_primary_key = p - 1
-  }
-  action PrimaryKey {
-    primary_key!
-    end_data_type ||= mark_primary_key
-  }
+  action MarkPrimaryKey    { mark_primary_key = p - 1 }
+  action PrimaryKey        {
+                             primary_key!
+                             end_data_type ||= mark_primary_key
+                           }
 
-  action MarkUnique {
-    mark_unique = p - 5
-  }
-  action Unique {
-    unique!
-    end_data_type ||= mark_unique
-  }
+  action MarkUnique        { mark_unique = p - 5 }
+  action Unique            {
+                             unique!
+                             end_data_type ||= mark_unique
+                           }
 
-  action MarkAutoincrement {
-    mark_autoincrement = p - 1
-  }
-  action Autoincrement {
-    autoincrement!
-    end_data_type ||= mark_autoincrement
-  }
+  action MarkAutoincrement { mark_autoincrement = p - 1 }
+  action Autoincrement     {
+                             autoincrement!
+                             end_data_type ||= mark_autoincrement
+                           }
 
-  action MarkNotNull {
-    mark_not_null = p - 4
-  }
-  action Null {
-    mark_not_null ||= nil
-    if mark_not_null
-      self.null = false
-      end_data_type ||= mark_not_null
-    else
-      self.null = true
-      end_data_type ||= p - 4
-    end
-    mark_not_null = nil
-  }
+  action MarkNotNull       { mark_not_null = p - 4 }
+  action Null              {
+                             mark_not_null ||= nil
+                             if mark_not_null
+                               self.null = false
+                               end_data_type ||= mark_not_null
+                             else
+                               self.null = true
+                               end_data_type ||= p - 4
+                             end
+                           }
 
-  action MarkDefault {
-    mark_default = p - 1
-  }
-  action StartDefault {
-    start_default = p
-  }
-  action EndDefault {
-    self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
-    end_data_type ||= mark_default
-    start_default = nil
-  }
+  action MarkDefault       { mark_default = p - 1 }
+  action StartDefault      { start_default = p }
+  action EndDefault        {
+                             self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
+                             end_data_type ||= mark_default
+                           }
 
-  action NotEnclosedInQuotes {
-    (quote_value % 2) == 0
-  }
-  action EnclosedInQuotes {
-    (quote_value % 2) == 1
-  }
-
+  # conditions
+  action NotEnclosedInQuotes { (quote_value % 2) == 0 }
+  action EnclosedInQuotes    { (quote_value % 2) == 1 }
 
   name            = quote_ident ident >StartName %EndName quote_ident;
   primary_key     = ('primary'i space+ 'key'i) >MarkPrimaryKey @PrimaryKey;

@@ -14,46 +14,23 @@ require 'create_table/unique'
 
   include "create_table/common.rl";
 
-  action StartTableName {
-    start_table_name = p
-  }
-  action EndTableName {
-    self.table_name = read(data, start_table_name, p)
-    start_table_name = nil
-  }
-  action StartColumn {
-    start_column = p
-  }
-  action EndColumn {
-    parse_column read(data, start_column, p)
-    start_column = nil
-  }
-  action StartPrimaryKey {
-    start_primary_key = p
-  }
-  action EndPrimaryKey {
-    self.primary_key = read(data, start_primary_key, p)
-    start_primary_key = nil
-  }
-  action StartUnique {
-    start_unique = p
-  }
-  action EndUnique {
-    parse_unique read(data, start_unique, p)
-    start_unique = nil
-  }
-  action StartIndex {
-    start_index = p
-  }
-  action EndIndex {
-    parse_index read(data, start_index, p)
-    start_index = nil
-  }
+  action StartTableName   { start_table_name = p                                  }
+  action EndTableName     { self.table_name = read(data, start_table_name, p)     }
+
+  action StartColumn      { start_column = p                                      }
+  action EndColumn        { parse_column read(data, start_column, p)              }
+  
+  action StartPrimaryKey  { start_primary_key = p                                 }
+  action EndPrimaryKey    { self.primary_key = read(data, start_primary_key, p)   }
+  
+  action StartUnique      { start_unique = p                                      }
+  action EndUnique        { parse_unique read(data, start_unique, p)              }
+  
+  action StartIndex       { start_index = p                                       }
+  action EndIndex         { parse_index read(data, start_index, p)                }
 
   # conditions
-  action NotEnclosedInParentheses {
-    parens == 0
-  }
+  action NotEnclosedInParentheses { parens == 0 }
 
   create_table           = 'create'i space+ ('temporary'i space+ @{@temporary=true})? 'table'i;
   
