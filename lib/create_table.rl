@@ -108,10 +108,8 @@ class CreateTable
       @primary_key = nil
     else
       @primary_key = column_name.to_s
-      unless indexes[@primary_key]
-        i = Index.new self
-        i.column_names = @primary_key
-      end
+      i = Index.new self
+      i.column_names = @primary_key
     end
     nil
   end

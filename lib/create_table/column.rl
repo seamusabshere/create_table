@@ -93,6 +93,8 @@
 }%%
 =end
 
+require 'create_table/column/to_sql'
+
 class CreateTable
   class Column
     BLANK_STRING = ''
@@ -101,7 +103,7 @@ class CreateTable
 
     attr_reader :parent
     attr_reader :name
-    attr_accessor :data_type
+    attr_reader :data_type
     attr_writer :default
     attr_writer :null
 
@@ -114,18 +116,14 @@ class CreateTable
       @name = name
     end
 
-    def parse(str)
-      data = Parser.remove_comments(str).strip.unpack('c*')
-      %% write data;
-      # % (this fixes syntax highlighting)
-      parens = quote_value = 0
-      p = item = 0
-      pe = eof = data.length
-      %% write init;
-      # % (this fixes syntax highlighting)
-      %% write exec;
-      # % (this fixes syntax highlighting)
-      self
+    def data_type=(str)
+      case str
+      when /serial/i
+        autoincrement!
+        @data_type = 'INTEGER'
+      else
+        @data_type = str
+      end
     end
 
     def default
@@ -146,6 +144,8 @@ class CreateTable
       end
     end
 
+    alias :allow_null :null
+
     def primary_key
       parent.primary_key == self
     end
@@ -155,7 +155,9 @@ class CreateTable
     end
 
     def unique
-      if index = parent.indexes[name]
+      if primary_key
+        true
+      elsif index = parent.indexes[name]
         index.unique
       else
         false
@@ -168,6 +170,14 @@ class CreateTable
 
     def unique!
       parent.add_unique name
+    end
+
+    def index!
+      parent.add_index name
+    end
+
+    def indexed
+      primary_key or !!parent.indexes[name]
     end
 
     def autoincrement!
@@ -183,28 +193,18 @@ class CreateTable
       [name]
     end
 
-    def quoted_name
-      CreateTable.quote_ident name
+    def parse(str)
+      data = Parser.remove_comments(str).strip.unpack('c*')
+      %% write data;
+      # % (this fixes syntax highlighting)
+      parens = quote_value = 0
+      p = item = 0
+      pe = eof = data.length
+      %% write init;
+      # % (this fixes syntax highlighting)
+      %% write exec;
+      # % (this fixes syntax highlighting)
+      self
     end
-
-    def to_sql
-      [quoted_name, options].join ' '
-    end
-
-    def options
-      parts = []
-      parts << data_type
-      if primary_key
-        parts << 'PRIMARY KEY'
-      end
-      if unique and not named_unique
-        parts << 'UNIQUE'
-      end
-      if autoincrement
-        parts << 'AUTO_INCREMENT'
-      end
-      parts.join ' '
-    end
-
   end
 end

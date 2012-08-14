@@ -52,10 +52,8 @@ class CreateTable
       @primary_key = nil
     else
       @primary_key = column_name.to_s
-      unless indexes[@primary_key]
-        i = Index.new self
-        i.column_names = @primary_key
-      end
+      i = Index.new self
+      i.column_names = @primary_key
     end
     nil
   end
@@ -136,7 +134,7 @@ class CreateTable
   def parse(str)
     data = Parser.remove_comments(str).unpack('c*')
     
-# line 140 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
+# line 138 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 class << self
 	attr_accessor :_parser_cond_keys
 	private :_parser_cond_keys, :_parser_cond_keys=
@@ -16639,23 +16637,23 @@ end
 self.parser_en_main = 1;
 
 
-# line 195 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
+# line 193 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     parens = quote_value = 0
     p = item = 0
     pe = eof = data.length
     
-# line 16649 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
+# line 16647 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 200 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
+# line 198 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     
-# line 16659 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
+# line 16657 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _cond, _conds, _widec, _acts, _nacts = nil
@@ -17124,7 +17122,7 @@ parens-=1		end
 # line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
-# line 17128 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
+# line 17126 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 	end
 	end
 	end
@@ -17147,7 +17145,7 @@ parens-=1		end
 end
 	end
 
-# line 202 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
+# line 200 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     self
   end

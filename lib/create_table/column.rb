@@ -8,6 +8,8 @@
 
 =end
 
+require 'create_table/column/to_sql'
+
 class CreateTable
   class Column
     BLANK_STRING = ''
@@ -16,7 +18,7 @@ class CreateTable
 
     attr_reader :parent
     attr_reader :name
-    attr_accessor :data_type
+    attr_reader :data_type
     attr_writer :default
     attr_writer :null
 
@@ -29,10 +31,87 @@ class CreateTable
       @name = name
     end
 
+    def data_type=(str)
+      case str
+      when /serial/i
+        autoincrement!
+        @data_type = 'INTEGER'
+      else
+        @data_type = str
+      end
+    end
+
+    def default
+      if defined?(@default)
+        @default
+      elsif primary_key and data_type =~ /char/i
+        BLANK_STRING
+      end
+    end
+
+    def null
+      if defined?(@null)
+        @null
+      elsif primary_key
+        false
+      else
+        true
+      end
+    end
+
+    alias :allow_null :null
+
+    def primary_key
+      parent.primary_key == self
+    end
+
+    def primary_key!
+      parent.primary_key = name
+    end
+
+    def unique
+      if primary_key
+        true
+      elsif index = parent.indexes[name]
+        index.unique
+      else
+        false
+      end
+    end
+
+    def named_unique
+      unique and parent.indexes[name].name
+    end
+
+    def unique!
+      parent.add_unique name
+    end
+
+    def index!
+      parent.add_index name
+    end
+
+    def indexed
+      primary_key or !!parent.indexes[name]
+    end
+
+    def autoincrement!
+      @autoincrement = true
+    end
+
+    def autoincrement
+      @autoincrement == true
+    end
+
+    # @private
+    def column_names
+      [name]
+    end
+
     def parse(str)
       data = Parser.remove_comments(str).strip.unpack('c*')
       
-# line 36 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 115 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 class << self
 	attr_accessor :_parser_cond_keys
 	private :_parser_cond_keys, :_parser_cond_keys=
@@ -9210,23 +9289,23 @@ end
 self.parser_en_main = 1;
 
 
-# line 120 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 199 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       parens = quote_value = 0
       p = item = 0
       pe = eof = data.length
       
-# line 9220 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 9299 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 125 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 204 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       
-# line 9230 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 9309 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 begin
 	testEof = false
 	_slen, _trans, _keys, _inds, _cond, _conds, _widec, _acts, _nacts = nil
@@ -9532,7 +9611,7 @@ quote_value+=1		end
 
     mark_autoincrement = p - 1
   		end
-# line 9536 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 9615 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 	end
 	end
 	end
@@ -9571,7 +9650,7 @@ quote_value+=1		end
     end_data_type ||= p
     self.data_type = read(data, start_data_type, end_data_type)
   		end
-# line 9575 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 9654 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 	  end
 	end
 
@@ -9582,88 +9661,9 @@ quote_value+=1		end
 end
 	end
 
-# line 127 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 206 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       self
     end
-
-    def default
-      if defined?(@default)
-        @default
-      elsif primary_key and data_type =~ /char/i
-        BLANK_STRING
-      end
-    end
-
-    def null
-      if defined?(@null)
-        @null
-      elsif primary_key
-        false
-      else
-        true
-      end
-    end
-
-    def primary_key
-      parent.primary_key == self
-    end
-
-    def primary_key!
-      parent.primary_key = name
-    end
-
-    def unique
-      if index = parent.indexes[name]
-        index.unique
-      else
-        false
-      end
-    end
-
-    def named_unique
-      unique and parent.indexes[name].name
-    end
-
-    def unique!
-      parent.add_unique name
-    end
-
-    def autoincrement!
-      @autoincrement = true
-    end
-
-    def autoincrement
-      @autoincrement == true
-    end
-
-    # @private
-    def column_names
-      [name]
-    end
-
-    def quoted_name
-      CreateTable.quote_ident name
-    end
-
-    def to_sql
-      [quoted_name, options].join ' '
-    end
-
-    def options
-      parts = []
-      parts << data_type
-      if primary_key
-        parts << 'PRIMARY KEY'
-      end
-      if unique and not named_unique
-        parts << 'UNIQUE'
-      end
-      if autoincrement
-        parts << 'AUTO_INCREMENT'
-      end
-      parts.join ' '
-    end
-
   end
 end
