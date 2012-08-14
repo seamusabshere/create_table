@@ -6,34 +6,34 @@
 
   include "common.rl";
 
-  action StartName         { start_name = p }
-  action EndName           { self.name = read(data, start_name, p) }
+  action StartName         { start_name = p                                               }
+  action EndName           { self.name = read(data, start_name, p)                        }
 
-  action StartDataType     { start_data_type = p }
+  action StartDataType     { start_data_type = p                                          }
   action EndDataType       {
                              end_data_type ||= p
                              self.data_type = read(data, start_data_type, end_data_type)
                            }
 
-  action MarkPrimaryKey    { mark_primary_key = p - 1 }
+  action MarkPrimaryKey    { mark_primary_key = p - 1                                     }
   action PrimaryKey        {
                              primary_key!
                              end_data_type ||= mark_primary_key
                            }
 
-  action MarkUnique        { mark_unique = p - 5 }
+  action MarkUnique        { mark_unique = p - 5                                          }
   action Unique            {
                              unique!
                              end_data_type ||= mark_unique
                            }
 
-  action MarkAutoincrement { mark_autoincrement = p - 1 }
+  action MarkAutoincrement { mark_autoincrement = p - 1                                   }
   action Autoincrement     {
                              autoincrement!
                              end_data_type ||= mark_autoincrement
                            }
 
-  action MarkNotNull       { mark_not_null = p - 4 }
+  action MarkNotNull       { mark_not_null = p - 4                                        }
   action Null              {
                              mark_not_null ||= nil
                              if mark_not_null
@@ -45,8 +45,8 @@
                              end
                            }
 
-  action MarkDefault       { mark_default = p - 1 }
-  action StartDefault      { start_default = p }
+  action MarkDefault       { mark_default = p - 1                                         }
+  action StartDefault      { start_default = p                                            }
   action EndDefault        {
                              self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
                              end_data_type ||= mark_default

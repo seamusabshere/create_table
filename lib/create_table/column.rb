@@ -941,19 +941,19 @@ quote_value+=1		end
 when 1 then
 # line 9 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- start_name = p 		end
+ start_name = p                                               		end
 when 2 then
 # line 10 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- self.name = read(data, start_name, p) 		end
+ self.name = read(data, start_name, p)                        		end
 when 3 then
 # line 12 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- start_data_type = p 		end
+ start_data_type = p                                          		end
 when 5 then
 # line 18 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- mark_primary_key = p - 1 		end
+ mark_primary_key = p - 1                                     		end
 when 6 then
 # line 19 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
@@ -964,7 +964,7 @@ when 6 then
 when 7 then
 # line 24 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- mark_unique = p - 5 		end
+ mark_unique = p - 5                                          		end
 when 8 then
 # line 25 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
@@ -975,7 +975,7 @@ when 8 then
 when 9 then
 # line 30 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- mark_autoincrement = p - 1 		end
+ mark_autoincrement = p - 1                                   		end
 when 10 then
 # line 31 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
@@ -986,7 +986,7 @@ when 10 then
 when 11 then
 # line 36 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- mark_not_null = p - 4 		end
+ mark_not_null = p - 4                                        		end
 when 12 then
 # line 37 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
@@ -1003,11 +1003,11 @@ when 12 then
 when 13 then
 # line 48 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- mark_default = p - 1 		end
+ mark_default = p - 1                                         		end
 when 14 then
 # line 49 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
- start_default = p 		end
+ start_default = p                                            		end
 when 15 then
 # line 50 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
 		begin
