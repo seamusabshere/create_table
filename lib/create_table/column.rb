@@ -935,7 +935,7 @@ begin
 			_acts += 1
 			case _parser_actions[_acts - 1]
 when 0 then
-# line 12 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
+# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 quote_value+=1		end
 when 1 then
