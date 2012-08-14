@@ -52,7 +52,7 @@ EOS
     end
     ragel = "#{path}.rb"
     $stderr.write " compiling Ragel to #{File.basename(ragel)}..."
-    if (child = POSIX::Spawn::Child.new('ragel', '-R', '-F1', debugged)).status.success?
+    if (child = POSIX::Spawn::Child.new('ragel', '-R', debugged)).status.success?
       # File.unlink debugged
     else
       raise "Error: #{child.err}"

@@ -31,24 +31,55 @@ class CreateTable
       
 # line 33 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 class << self
+	attr_accessor :_parser_actions
+	private :_parser_actions, :_parser_actions=
+end
+self._parser_actions = [
+	0, 1, 0, 1, 1, 1, 2, 1, 
+	3
+]
+
+class << self
+	attr_accessor :_parser_key_offsets
+	private :_parser_key_offsets, :_parser_key_offsets=
+end
+self._parser_key_offsets = [
+	0, 0, 10, 15, 27, 31, 40, 45, 
+	55, 57, 67
+]
+
+class << self
 	attr_accessor :_parser_trans_keys
 	private :_parser_trans_keys, :_parser_trans_keys=
 end
 self._parser_trans_keys = [
-	0, 0, 9, 122, 65, 122, 
-	9, 122, 9, 40, 9, 
-	122, 65, 122, 34, 122, 
-	41, 44, 9, 122, 9, 32, 
-	0
+	32, 34, 40, 96, 9, 13, 65, 90, 
+	95, 122, 95, 65, 90, 97, 122, 32, 
+	34, 40, 96, 9, 13, 48, 57, 65, 
+	90, 95, 122, 32, 40, 9, 13, 32, 
+	34, 96, 9, 13, 65, 90, 95, 122, 
+	95, 65, 90, 97, 122, 34, 41, 44, 
+	96, 48, 57, 65, 90, 95, 122, 41, 
+	44, 32, 34, 41, 96, 9, 13, 65, 
+	90, 95, 122, 32, 9, 13, 0
 ]
 
 class << self
-	attr_accessor :_parser_key_spans
-	private :_parser_key_spans, :_parser_key_spans=
+	attr_accessor :_parser_single_lengths
+	private :_parser_single_lengths, :_parser_single_lengths=
 end
-self._parser_key_spans = [
-	0, 114, 58, 114, 32, 114, 58, 89, 
-	4, 114, 24
+self._parser_single_lengths = [
+	0, 4, 1, 4, 2, 3, 1, 4, 
+	2, 4, 1
+]
+
+class << self
+	attr_accessor :_parser_range_lengths
+	private :_parser_range_lengths, :_parser_range_lengths=
+end
+self._parser_range_lengths = [
+	0, 3, 2, 4, 1, 3, 2, 3, 
+	0, 3, 1
 ]
 
 class << self
@@ -56,8 +87,8 @@ class << self
 	private :_parser_index_offsets, :_parser_index_offsets=
 end
 self._parser_index_offsets = [
-	0, 0, 115, 174, 289, 322, 437, 496, 
-	586, 591, 706
+	0, 0, 8, 12, 21, 25, 32, 36, 
+	44, 47, 55
 ]
 
 class << self
@@ -65,98 +96,14 @@ class << self
 	private :_parser_indicies, :_parser_indicies=
 end
 self._parser_indicies = [
-	0, 0, 0, 0, 0, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 0, 
-	1, 2, 1, 1, 1, 1, 1, 3, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 1, 1, 1, 1, 4, 2, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 1, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 1, 1, 1, 
-	1, 4, 1, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 4, 4, 
-	4, 4, 4, 4, 4, 1, 5, 5, 
-	5, 5, 5, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 5, 1, 5, 
-	1, 1, 1, 1, 1, 6, 1, 1, 
-	1, 1, 1, 1, 1, 7, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 1, 
-	1, 1, 1, 1, 1, 1, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 7, 
-	1, 1, 1, 1, 7, 5, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 7, 
-	7, 7, 7, 7, 7, 7, 7, 7, 
-	1, 8, 8, 8, 8, 8, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	8, 1, 1, 1, 1, 1, 1, 1, 
-	3, 1, 3, 3, 3, 3, 3, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 3, 1, 9, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 1, 1, 1, 1, 
-	10, 9, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 1, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 1, 
-	1, 1, 1, 10, 1, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 1, 
-	11, 1, 1, 1, 1, 1, 1, 12, 
-	1, 1, 12, 1, 1, 1, 13, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	1, 1, 1, 1, 1, 1, 1, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	13, 1, 1, 1, 1, 13, 11, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	13, 13, 13, 13, 13, 13, 13, 13, 
-	13, 1, 14, 1, 1, 14, 1, 14, 
-	14, 14, 14, 14, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 14, 1, 
-	9, 1, 1, 1, 1, 1, 1, 15, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 1, 1, 1, 1, 10, 9, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 10, 10, 10, 10, 10, 10, 10, 
-	10, 1, 15, 15, 15, 15, 15, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 15, 1, 0
+	0, 2, 3, 2, 0, 4, 4, 1, 
+	4, 4, 4, 1, 5, 5, 6, 5, 
+	5, 7, 7, 7, 1, 8, 3, 8, 
+	1, 3, 9, 9, 3, 10, 10, 1, 
+	10, 10, 10, 1, 11, 12, 12, 11, 
+	13, 13, 13, 1, 14, 14, 1, 14, 
+	9, 15, 9, 14, 10, 10, 1, 15, 
+	15, 1, 0
 ]
 
 class << self
@@ -173,8 +120,8 @@ class << self
 	private :_parser_trans_actions, :_parser_trans_actions=
 end
 self._parser_trans_actions = [
-	0, 0, 0, 0, 1, 2, 2, 0, 
-	0, 0, 3, 4, 4, 0, 0, 0
+	0, 0, 0, 0, 1, 3, 3, 0, 
+	0, 0, 5, 7, 7, 0, 0, 0
 ]
 
 class << self
@@ -202,7 +149,7 @@ self.parser_en_main = 1;
       p = item = 0
       pe = eof = data.length
       
-# line 206 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
+# line 153 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
@@ -212,10 +159,9 @@ end
 # line 57 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       
-# line 216 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
+# line 163 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 begin
-	testEof = false
-	_slen, _trans, _keys, _inds, _acts, _nacts = nil
+	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
 	_resume = 10
 	_eof_trans = 15
@@ -223,6 +169,7 @@ begin
 	_test_eof = 30
 	_out = 40
 	while true
+	_trigger_goto = false
 	if _goto_level <= 0
 	if p == pe
 		_goto_level = _test_eof
@@ -234,48 +181,97 @@ begin
 	end
 	end
 	if _goto_level <= _resume
-	_keys = cs << 1
-	_inds = _parser_index_offsets[cs]
-	_slen = _parser_key_spans[cs]
-	_trans = if (   _slen > 0 && 
-			_parser_trans_keys[_keys] <= data[p].ord && 
-			data[p].ord <= _parser_trans_keys[_keys + 1] 
-		    ) then
-			_parser_indicies[ _inds + data[p].ord - _parser_trans_keys[_keys] ] 
-		 else 
-			_parser_indicies[ _inds + _slen ]
-		 end
+	_keys = _parser_key_offsets[cs]
+	_trans = _parser_index_offsets[cs]
+	_klen = _parser_single_lengths[cs]
+	_break_match = false
+	
+	begin
+	  if _klen > 0
+	     _lower = _keys
+	     _upper = _keys + _klen - 1
+
+	     loop do
+	        break if _upper < _lower
+	        _mid = _lower + ( (_upper - _lower) >> 1 )
+
+	        if data[p].ord < _parser_trans_keys[_mid]
+	           _upper = _mid - 1
+	        elsif data[p].ord > _parser_trans_keys[_mid]
+	           _lower = _mid + 1
+	        else
+	           _trans += (_mid - _keys)
+	           _break_match = true
+	           break
+	        end
+	     end # loop
+	     break if _break_match
+	     _keys += _klen
+	     _trans += _klen
+	  end
+	  _klen = _parser_range_lengths[cs]
+	  if _klen > 0
+	     _lower = _keys
+	     _upper = _keys + (_klen << 1) - 2
+	     loop do
+	        break if _upper < _lower
+	        _mid = _lower + (((_upper-_lower) >> 1) & ~1)
+	        if data[p].ord < _parser_trans_keys[_mid]
+	          _upper = _mid - 2
+	        elsif data[p].ord > _parser_trans_keys[_mid+1]
+	          _lower = _mid + 2
+	        else
+	          _trans += ((_mid - _keys) >> 1)
+	          _break_match = true
+	          break
+	        end
+	     end # loop
+	     break if _break_match
+	     _trans += _klen
+	  end
+	end while false
+	_trans = _parser_indicies[_trans]
 	cs = _parser_trans_targs[_trans]
 	if _parser_trans_actions[_trans] != 0
-	case _parser_trans_actions[_trans]
-	when 1 then
+		_acts = _parser_trans_actions[_trans]
+		_nacts = _parser_actions[_acts]
+		_acts += 1
+		while _nacts > 0
+			_nacts -= 1
+			_acts += 1
+			case _parser_actions[_acts - 1]
+when 0 then
 # line 9 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
     start_name = p
   		end
-	when 2 then
+when 1 then
 # line 12 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
     self.name = read(data, start_name, p)
     start_name = nil
   		end
-	when 3 then
+when 2 then
 # line 16 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
     start_column_name = p
   		end
-	when 4 then
+when 3 then
 # line 19 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
 
     column_names << read(data, start_column_name, p)
     start_column_name = nil
   		end
-# line 278 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
+# line 270 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
+			end # action switch
+		end
 	end
+	if _trigger_goto
+		next
 	end
 	end
 	if _goto_level <= _again
@@ -294,7 +290,7 @@ begin
 	if _goto_level <= _out
 		break
 	end
-end
+	end
 	end
 
 # line 59 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"

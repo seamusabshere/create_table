@@ -59,14 +59,14 @@ require 'create_table/unique'
   
   table_name             = quote_ident ident >StartTableName %EndTableName quote_ident;
   
-  column_name            = quote_ident (ident - ('index'i | 'primary'i | 'unique'i | 'key'i)) >StartColumn quote_ident;
+  column_name            = quote_ident (ident - ('index'i | 'primary'i | 'unique'i | 'key'i | 'constraint'i)) >StartColumn quote_ident;
   column_options         = with_parens %EndColumn :> [,)] when NotEnclosedInParentheses;
   column_definition      = space* column_name space+ column_options;
-  
-  primary_key_definition = space* 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
 
-  unique_definition      = space* 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
-  index_definition       = space* ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
+  constraint_keyword     = space* 'constraint'i? space*;  
+  primary_key_definition = constraint_keyword 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
+  unique_definition      = constraint_keyword 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
+  index_definition       = constraint_keyword ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
 
   main := space* create_table space+ table_name space+ lparens (column_definition | primary_key_definition | unique_definition | index_definition)+ rparens;
 }%%
@@ -101,6 +101,10 @@ class CreateTable
     if sql
       parse sql
     end
+  end
+
+  def column_count
+    columns.length
   end
 
   def primary_key=(column_name)

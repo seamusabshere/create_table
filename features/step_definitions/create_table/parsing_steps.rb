@@ -6,8 +6,6 @@ Given /CREATE TABLE sql/ do |sql|
   @object = CreateTable.new sql
 end
 
-
-
 Given /column definition (.*)/ do |str|
   @object = CreateTable::Column.new(@create_table).parse(str)
 end
@@ -20,48 +18,43 @@ Given /unique definition (.*)/ do |str|
   @object = CreateTable::Unique.new(@create_table).parse(str)
 end
 
-Then /the (.*) should be (.*)/ do |method_id, ref|
+def fix_ref(ref)
   case ref
   when /^"/
-    ref = ref[1..-2]
+    ref[1..-2]
   when 'nil'
-    ref = nil
+    nil
   when 'false'
-    ref = false
+    false
   when 'true'
-    ref = true
+    true
+  when /^\d+$/
+    ref.to_i
   else
-    ref.strip
+    ref
   end
+end
 
-  v = @object.send(method_id)
+def fix_v(v)
   case v
   when Array
-    v = v.join(', ')
+    v.join(', ')
+  else
+    v
   end
+end
 
-  ref.should == v
+Then /the (.*) should be (.*)/ do |method_id, ref|
+  ref = fix_ref ref
+  v = @object.send(method_id)
+  v = fix_v v
+  v.should == ref
 end
 
 Then /column (.*) (.*) should be (.*)/ do |column_name, method_id, ref|
-  case ref
-  when /^"/
-    ref = ref[1..-2]
-  when 'nil'
-    ref = nil
-  when 'false'
-    ref = false
-  when 'true'
-    ref = true
-  else
-    ref.strip
-  end
-
+  ref = fix_ref ref
+  column_name = fix_ref column_name
   v = @object.columns[column_name].send(method_id)
-  case v
-  when Array
-    v = v.join(', ')
-  end
-
-  ref.should == v
+  v = fix_v v
+  v.should == ref
 end
