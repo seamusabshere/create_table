@@ -1,0 +1,23 @@
+--- 
+table_name: where
+description: Reserved words in table and column names
+input: 
+  postgresql: &id001 |
+    CREATE TABLE "where" (
+      nickname CHARACTER VARYING(255),
+      "false" CHARACTER VARYING(255),
+      "else" NUMERIC(5,2)
+    )
+
+  mysql: *id001
+  sqlite3: *id001
+output: 
+  postgresql: &id002 |
+    CREATE TABLE "where" (
+      nickname CHARACTER VARYING(255),
+      "false" CHARACTER VARYING(255),
+      "else" NUMERIC(5,2)
+    )
+
+  mysql: *id002
+  sqlite3: *id002

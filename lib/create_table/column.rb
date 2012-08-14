@@ -8,8 +8,6 @@
 
 =end
 
-require 'create_table/column/to_sql'
-
 class CreateTable
   class Column
     BLANK_STRING = ''
@@ -111,7 +109,7 @@ class CreateTable
     def parse(str)
       data = Parser.remove_comments(str).strip.unpack('c*')
       
-# line 115 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 113 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 class << self
 	attr_accessor :_parser_actions
 	private :_parser_actions, :_parser_actions=
@@ -810,23 +808,23 @@ end
 self.parser_en_main = 1;
 
 
-# line 174 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 172 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       parens = quote_value = 0
       p = item = 0
       pe = eof = data.length
       
-# line 820 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 818 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 179 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 177 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       
-# line 830 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 828 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 begin
 	_klen, _trans, _keys, _widec, _acts, _nacts = nil
 	_goto_level = 0
@@ -1015,7 +1013,7 @@ when 15 then
                              self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
                              end_data_type ||= mark_default
                            		end
-# line 1019 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 1017 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 			end # action switch
 		end
 	end
@@ -1057,7 +1055,7 @@ when 15 then
                              self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
                              end_data_type ||= mark_default
                            		end
-# line 1061 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
+# line 1059 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.rb"
 		end # eof action switch
 	end
 	if _trigger_goto
@@ -1071,9 +1069,61 @@ end
 	end
 	end
 
-# line 181 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
+# line 179 "/Users/seamusabshere/code/create_table/lib/create_table/column.rl.tmp"
       # % (this fixes syntax highlighting)
       self
+    end
+
+    # generating
+
+    def to_sql(format, options)
+      send "to_#{format}", options
+    end
+
+    def to_mysql(options)
+      parts = []
+      parts << CreateTable.quote_ident(name, options)
+      parts << data_type
+      if primary_key
+        parts << 'PRIMARY KEY'
+      elsif unique and not named_unique
+        parts << 'UNIQUE'
+      end
+      if autoincrement
+        parts << 'AUTO_INCREMENT'
+      end
+      parts.join ' '
+    end
+
+    def to_postgresql(options)
+      parts = []
+      parts << CreateTable.quote_ident(name, options)
+      if autoincrement and data_type =~ /integer/i
+        parts << 'SERIAL'
+      else
+        parts << data_type
+      end
+      if primary_key
+        parts << 'PRIMARY KEY'
+      elsif unique and not named_unique
+        parts << 'UNIQUE'
+      end
+      parts.join ' '
+    end
+
+    def to_sqlite3(options)
+      parts = []
+      parts << CreateTable.quote_ident(name, options)
+      parts << data_type
+      if primary_key
+        parts << 'PRIMARY KEY'
+      elsif unique and not named_unique
+        parts << 'UNIQUE'
+      end
+      if autoincrement
+        parts << 'AUTOINCREMENT'
+      end
+      parts.join ' '
     end
   end
 end

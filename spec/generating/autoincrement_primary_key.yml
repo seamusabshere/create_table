@@ -1,0 +1,74 @@
+--- 
+table_name: cats
+description: Auto-incrementing primary key defined inline
+input: 
+  postgresql: 
+    - |
+      CREATE TABLE cats (
+        id SERIAL PRIMARY KEY,
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2)
+      )
+    - |
+      CREATE TABLE cats (
+        id SERIAL,
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        PRIMARY KEY ("id")
+      )
+  mysql: 
+    - |
+      CREATE TABLE cats (
+        id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2)
+      )
+    - |
+      CREATE TABLE cats (
+        id INTEGER AUTO_INCREMENT,
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        PRIMARY KEY ("id")
+      )
+  sqlite3: |
+    CREATE TABLE cats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+
+output: 
+  postgresql: |
+    CREATE TABLE cats (
+      "id" SERIAL PRIMARY KEY,
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+  mysql: |-
+    CREATE TABLE cats (
+      "id" INTEGER PRIMARY KEY AUTO_INCREMENT,
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+  sqlite3: |-
+    CREATE TABLE cats (
+      "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )

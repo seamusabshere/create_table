@@ -1,0 +1,35 @@
+--- 
+table_name: cats
+description: String primary key
+input: 
+  postgresql: &id001 
+    - |
+      CREATE TABLE cats (
+        nickname CHARACTER VARYING(255) PRIMARY KEY,
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2)
+      )
+
+    - |
+      CREATE TABLE cats (
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        PRIMARY KEY (nickname)
+      )
+
+  mysql: *id001
+  sqlite3: *id001
+output: 
+  postgresql: &id002 |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255) PRIMARY KEY,
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+
+  mysql: *id002
+  sqlite3: *id002

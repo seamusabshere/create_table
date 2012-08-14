@@ -40,10 +40,9 @@ require 'create_table/unique'
   column_options         = with_parens %EndColumn :> [,)] when NotEnclosedInParentheses;
   column_definition      = space* column_name space+ column_options;
 
-  constraint_keyword     = space* ('constraint'i space+)?;
-  primary_key_definition = constraint_keyword 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
-  unique_definition      = constraint_keyword 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
-  index_definition       = constraint_keyword ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
+  primary_key_definition = space* ('constraint'i space+)? 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
+  unique_definition      = space* ('constraint'i space+)? 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
+  index_definition       = space* ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
 
   main := space* create_table space+ table_name space+ lparens (column_definition | primary_key_definition | unique_definition | index_definition)+ rparens;
 }%%
@@ -51,10 +50,11 @@ require 'create_table/unique'
 
 class CreateTable
   class << self
-    def quote_ident(ident)
+    def quote_ident(ident, options = {})
       @reserved_words ||= (IO.readlines(File.expand_path('../create_table/mysql_reserved.txt', __FILE__)) + IO.readlines(File.expand_path('../create_table/pg_reserved.txt', __FILE__))).map(&:chomp).sort.uniq
+      quote_ident = options.fetch(:quote_ident, QUOTE_IDENT)
       if @reserved_words.include?(ident.upcase)
-        QUOTE_IDENT + ident + QUOTE_IDENT
+        quote_ident + ident + quote_ident
       else
         ident
       end
@@ -130,42 +130,39 @@ class CreateTable
     i
   end
 
-  def create_table_sql
+  def create_table_sql(format, options)
     x = []
     x << 'CREATE'
     x << 'TEMPORARY' if temporary
-    x << %{TABLE #{quoted_table_name} (}
-    x << columns.map(&:to_sql).join(', ')
+    x << %{TABLE #{quoted_table_name(options)} (}
+    x << columns.map { |c| c.to_sql(format, options) }.join(', ')
     x << ')'
     x.join ' '
   end
 
-  def create_indexes_sql
-    indexes.map(&:to_sql).compact
+  def create_indexes_sql(format, options)
+    indexes.map { |i| i.to_sql(format, options) }.compact
   end
 
-  def to_sql
-    [create_table_sql] + create_indexes_sql
+  def to_sql(format, options)
+    [create_table_sql(format, options)] + create_indexes_sql(format, options)
   end
 
-  def to_mysql(ansi_mode = false)
-    if ansi_mode
-      to_sql
-    else
-      to_sql.map { |stmt| stmt.gsub(QUOTE_IDENT, BACKTICK) }
-    end
+  def to_postgresql(options = {})
+    to_sql :postgresql, options
   end
 
-  def to_postgresql
-    to_sql
+  def to_mysql(options = {})
+    defaults = { :quote_ident => BACKTICK }
+    to_sql :mysql, defaults.merge(options)
   end
 
-  def to_sqlite3
-    [create_table_sql.gsub(/auto_?increment/i, 'AUTOINCREMENT')] + create_indexes_sql
+  def to_sqlite3(options = {})
+    to_sql :sqlite3, options
   end
 
-  def quoted_table_name
-    CreateTable.quote_ident table_name
+  def quoted_table_name(options)
+    CreateTable.quote_ident table_name, options
   end
 
   def parse(str)

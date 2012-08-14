@@ -11,7 +11,20 @@ Cucumber::Rake::Task.new(:cucumber) do |t|
   t.cucumber_opts = %w{--format pretty}
 end
 
-task :default => [:cucumber, :rspec]
+task :rspec_all_databases do
+  require 'posix-spawn'
+  %w{ postgresql mysql sqlite3 }.each do |db|
+    puts
+    puts '#'*50
+    puts "# Running specs against #{db}"
+    puts '#'*50
+    puts
+    pid = POSIX::Spawn.spawn({'DB' => db}, 'rspec', File.expand_path('../spec', __FILE__))
+    Process.waitpid pid
+  end
+end
+
+task :default => [:cucumber, :rspec_all_databases]
 
 task :ragel do
   require 'posix/spawn'

@@ -1,0 +1,37 @@
+--- 
+table_name: cats
+description: Named unique indexes
+input: 
+  mysql:
+    - |
+      CREATE TABLE cats (
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        UNIQUE KEY uindex_cats_on_nickname (nickname)
+      )
+    - |
+      CREATE TABLE cats (
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        UNIQUE INDEX uindex_cats_on_nickname (nickname)
+      )
+output: 
+  postgresql: 
+  - &id002 |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+  - CREATE UNIQUE INDEX uindex_cats_on_nickname ON cats (nickname)
+  mysql: 
+  - *id002
+  - CREATE UNIQUE INDEX uindex_cats_on_nickname ON cats (nickname)
+  sqlite3: 
+  - *id002
+  - CREATE UNIQUE INDEX uindex_cats_on_nickname ON cats (nickname)

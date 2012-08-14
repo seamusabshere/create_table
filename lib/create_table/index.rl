@@ -55,13 +55,14 @@ class CreateTable
       @column_names = [column_names].compact.flatten
     end
 
-    def to_sql
+    def to_sql(format, options)
       return if primary_key
+      return if unique and name.nil?
       parts = []
       parts << 'CREATE'
       parts << 'UNIQUE' if (unique and name)
       parts << 'INDEX'
-      parts += [ quoted_name, 'ON', parent.quoted_table_name, '(', quoted_column_names, ')' ]
+      parts += [ quoted_name(options), 'ON', parent.quoted_table_name(options), '(', quoted_column_names(options), ')' ]
       parts.join ' '
     end
 
@@ -71,17 +72,19 @@ class CreateTable
       end
     end
 
-    def quoted_name
+    def quoted_name(options)
       if name
-        CreateTable.quote_ident name
+        CreateTable.quote_ident name, options
+      elsif unique
+        "uidx_#{parent.table_name}_on_#{name}"
       else
-        "index_#{parent.table_name}_on_#{name}"
+        "idx_#{parent.table_name}_on_#{name}"
       end
     end
 
-    def quoted_column_names
+    def quoted_column_names(options)
       column_names.map do |column_name|
-        CreateTable.quote_ident column_name
+        CreateTable.quote_ident column_name, options
       end.join(', ')
     end
   end

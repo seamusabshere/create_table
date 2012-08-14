@@ -1,0 +1,25 @@
+--- 
+table_name: cats
+description: Double-quoted
+input: 
+  postgresql: &id001 |
+    CREATE TABLE "cats" (
+      "nickname" CHARACTER VARYING(255),
+      "birthday" DATE,
+      "license_id" INTEGER,
+      "price" NUMERIC(5,2)
+    )
+
+  mysql: *id001
+  sqlite3: *id001
+output: 
+  postgresql: &id002 |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+
+  mysql: *id002
+  sqlite3: *id002

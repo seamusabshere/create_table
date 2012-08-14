@@ -24,9 +24,6 @@ describe CreateTable do
     it "gets column names" do
       @c.columns.map(&:name).should == ['nickname', 'birthday', 'license_id', 'price']
     end
-    it "gets column options" do
-      # @c.columns.map(&:options).should == ['CHARACTER VARYING(255) PRIMARY KEY', "DATE DEFAULT '2005-01-01' NOT NULL", 'INTEGER', "NUMERIC(5,2) DEFAULT '14.50'"]
-    end
     it "gets data types" do
       @c.columns.map(&:data_type).should == ['CHARACTER VARYING(255)', "DATE", 'INTEGER', "NUMERIC(5,2)"]
     end
@@ -74,9 +71,6 @@ describe CreateTable do
     it "gets column names" do
       @c.columns.map(&:name).should == ['nickname', 'false', 'else']
     end
-    it "gets column options" do
-      @c.columns.map(&:options).should == ['CHARACTER VARYING(255) PRIMARY KEY', 'CHARACTER VARYING(255)', 'NUMERIC(5,2)']
-    end
     it "gets all indexes" do
       @c.indexes.length.should == 1
     end
@@ -88,7 +82,7 @@ describe CreateTable do
           "else" NUMERIC(5,2)
         )
       }
-      assert_same_sql @c.to_sql, ref
+      assert_same_sql @c.to_postgresql, ref
     end
   end
 end

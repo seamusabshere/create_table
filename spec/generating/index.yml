@@ -1,0 +1,37 @@
+--- 
+table_name: cats
+description: Index defined in the "table constraints" section
+input: 
+  mysql:
+    - |
+      CREATE TABLE cats (
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        INDEX index_cats_on_nickname (nickname)
+      )
+    - |
+      CREATE TABLE cats (
+        nickname CHARACTER VARYING(255),
+        birthday DATE,
+        license_id INTEGER,
+        price NUMERIC(5,2),
+        KEY index_cats_on_nickname (nickname)
+      )
+output: 
+  postgresql: 
+  - &create_table |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+  - &create_indexes CREATE INDEX index_cats_on_nickname ON cats (nickname)
+  mysql: 
+  - *create_table
+  - *create_indexes
+  sqlite3: 
+  - *create_table
+  - *create_indexes

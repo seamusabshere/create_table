@@ -68,8 +68,6 @@
 }%%
 =end
 
-require 'create_table/column/to_sql'
-
 class CreateTable
   class Column
     BLANK_STRING = ''
@@ -180,6 +178,58 @@ class CreateTable
       %% write exec;
       # % (this fixes syntax highlighting)
       self
+    end
+
+    # generating
+
+    def to_sql(format, options)
+      send "to_#{format}", options
+    end
+
+    def to_mysql(options)
+      parts = []
+      parts << CreateTable.quote_ident(name, options)
+      parts << data_type
+      if primary_key
+        parts << 'PRIMARY KEY'
+      elsif unique and not named_unique
+        parts << 'UNIQUE'
+      end
+      if autoincrement
+        parts << 'AUTO_INCREMENT'
+      end
+      parts.join ' '
+    end
+
+    def to_postgresql(options)
+      parts = []
+      parts << CreateTable.quote_ident(name, options)
+      if autoincrement and data_type =~ /integer/i
+        parts << 'SERIAL'
+      else
+        parts << data_type
+      end
+      if primary_key
+        parts << 'PRIMARY KEY'
+      elsif unique and not named_unique
+        parts << 'UNIQUE'
+      end
+      parts.join ' '
+    end
+
+    def to_sqlite3(options)
+      parts = []
+      parts << CreateTable.quote_ident(name, options)
+      parts << data_type
+      if primary_key
+        parts << 'PRIMARY KEY'
+      elsif unique and not named_unique
+        parts << 'UNIQUE'
+      end
+      if autoincrement
+        parts << 'AUTOINCREMENT'
+      end
+      parts.join ' '
     end
   end
 end

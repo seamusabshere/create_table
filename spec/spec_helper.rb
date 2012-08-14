@@ -7,21 +7,32 @@ end
 
 require 'active_record'
 
-system %{ mysql -u root -ppassword -e "DROP DATABASE IF EXISTS create_table_test" }
-system %{ mysql -u root -ppassword -e "CREATE DATABASE create_table_test CHARSET utf8" }
-ENV['DATABASE_URL'] ||= 'mysql2://root:password@127.0.0.1/create_table_test'
-ActiveRecord::Base.establish_connection
+ENV['DB'] ||= 'mysql'
+case ENV['DB']
+when 'postgresql'
+  system %{ dropdb create_table_test }
+  system %{ createdb create_table_test }
+  ActiveRecord::Base.establish_connection :adapter => 'postgresql', :database => 'create_table_test'
+when 'mysql'
+  system %{ mysql -u root -ppassword -e "DROP DATABASE IF EXISTS create_table_test" }
+  system %{ mysql -u root -ppassword -e "CREATE DATABASE create_table_test CHARSET utf8" }
+  ENV['DATABASE_URL'] = 'mysql2://root:password@127.0.0.1/create_table_test'
+  ActiveRecord::Base.establish_connection
+when 'sqlite3'
+  ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
+else
+  raise "not supported"
+end
 
 require 'create_table'
 
 module SpecHelper
-  def assert_same_sql(a, b)
-    a = [a].flatten
-    b = [b].flatten
-    
-    a.each_with_index do |aa, i|
-      # $stderr.puts "#{a.inspect} versus #{b[i].inspect}"
-      clean_sql(aa).should == clean_sql(b[i])
+  def assert_same_sql(ref, actual)
+    ref = [ref].flatten
+    actual = [actual].flatten
+
+    ref.each_with_index do |ref1, i|
+      clean_sql(actual[i]).should == clean_sql(ref1)
     end
   end
 

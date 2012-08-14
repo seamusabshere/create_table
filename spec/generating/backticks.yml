@@ -1,0 +1,22 @@
+--- 
+table_name: cats
+description: MySQL-style backticks
+input: 
+  mysql: |
+    CREATE TABLE `cats` (
+      `nickname` CHARACTER VARYING(255),
+      `birthday` DATE,
+      `license_id` INTEGER,
+      `price` NUMERIC(5,2)
+    )
+output: 
+  postgresql: &id002 |
+    CREATE TABLE cats (
+      nickname CHARACTER VARYING(255),
+      birthday DATE,
+      license_id INTEGER,
+      price NUMERIC(5,2)
+    )
+
+  mysql: *id002
+  sqlite3: *id002
