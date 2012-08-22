@@ -8,7 +8,15 @@ class CreateTable
     SQL_COMMENT = %r{/\*(?:.|[\r\n])*?\*/}m
 
     def read(data, s, p)
-        data[s...p].pack('c*')
+      data[s...p].pack('c*')
+    end
+
+    def read_quoted(data, s, p)
+      memo = read data, s, p
+      memo.gsub! %{\\\'}, %{'}
+      memo.gsub! %{\\\"}, %{"}
+      memo.gsub! /(['"])\1/, '\1'
+      memo
     end
 
     # you still have to put this in the body of your file

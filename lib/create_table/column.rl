@@ -48,25 +48,49 @@
   action MarkDefault       { mark_default = p - 1                                         }
   action StartDefault      { start_default = p                                            }
   action EndDefault        {
-                             memo = read(data, start_default, p)
-                             memo.gsub! %{\\\'}, %{'}
-                             memo.gsub! %{\\\"}, %{"}
-                             memo.gsub! /(['"])\1/, '\1'
-                             self.default = memo
+                             self.default = read_quoted(data, start_default, p)
                              end_data_type ||= mark_default
                            }
 
+  action MarkCharset       { mark_charset = p - 5                                         }
+  action StartCharset      { start_charset = p                                            }
+  action EndCharset        {
+                             self.charset = read_quoted(data, start_charset, p)
+                             end_data_type ||= mark_charset
+                           }
+
+  action MarkCollate       { mark_collate = p - 1                                         }
+  action StartCollate      { start_collate = p                                            }
+  action EndCollate        {
+                             self.collate = read_quoted(data, start_collate, p)
+                             end_data_type ||= mark_collate
+                           }
+
   name                    = quote_ident ident >StartName %EndName quote_ident;
+  
   primary_key             = ('primary'i space+ 'key'i) >MarkPrimaryKey @PrimaryKey;
+  
   autoincrement           = ('auto'i '_'? 'increment'i) >MarkAutoincrement @Autoincrement;
+  
   unique                  = 'uniq'i %MarkUnique 'ue'i @Unique;
+  
   quoted_default_value    = quote_value (not_quote_or_escape | escaped_something | quoted_quote)+ >StartDefault %EndDefault quote_value;
   unquoted_default_value  = alnum+ >StartDefault %EndDefault space*;
   default                 = ('default'i space+) >MarkDefault (quoted_default_value | unquoted_default_value);
+  
   _null                   = ('not'i %MarkNotNull)? space+ 'null'i @Null;
+  
+  quoted_charset_value    = quote_value (not_quote_or_escape | escaped_something | quoted_quote)+ >StartCharset %EndCharset quote_value;
+  unquoted_charset_value  = (any - space)+ >StartCharset %EndCharset space*;
+  charset                 = 'char'i %MarkCharset ('set'i | ('acter'i space+ 'set'i)) space+ (quoted_charset_value | unquoted_charset_value);
+  
+  quoted_collate_value    = quote_value (not_quote_or_escape | escaped_something | quoted_quote)+ >StartCollate %EndCollate quote_value;
+  unquoted_collate_value  = (any - space)+ >StartCollate %EndCollate space*;
+  collate                 = ('collate'i space+) >MarkCollate (quoted_collate_value | unquoted_collate_value);
+  
   data_type               = any+;
 
-  main := space* name space+ data_type >StartDataType _null? default? primary_key? unique? autoincrement? %EndDataType;
+  main := space* name space+ data_type >StartDataType _null? default? primary_key? unique? autoincrement? collate? charset? %EndDataType;
 }%%
 =end
 
@@ -81,6 +105,8 @@ class CreateTable
     attr_reader :data_type
     attr_writer :default
     attr_writer :null
+    attr_accessor :charset
+    attr_accessor :collate
 
     def initialize(parent)
       @parent = parent
