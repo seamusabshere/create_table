@@ -39,16 +39,17 @@ task :ragel do
       lines = IO.readlines(path).map(&:chomp)
       File.open(debugged, 'w') do |f|
         lines.each do |line|
-          f.puts line
-          if line =~ /action (.*) \{/
-            action = $1
+          if line =~ /action ([^{]*) \{([^}]*)\}?/
+            action = $1.strip
+            inline = $2.strip
+            is_inline = inline.length > 0
             base = action.sub(/^(Mark|Start|End)/, '').underscore
             vars = [ "mark_#{base}", "start_#{base}", "end_#{base}", 'end_data_type', 'quote_value' ].uniq
             l1 = []
             l1 << "p=\#{p} \#{data[p..p].pack('c*').inspect}"
             l2 = vars.map { |name| "#{name}=\#{#{name}.inspect if defined?(#{name})}" }
             start = "start_#{base}"
-            f.puts <<-EOS
+            d = <<-EOS
 if ENV['VERBOSE'] == 'true'
   $stderr.puts "\n#{action}\n  #{l1.join(', ')}\n  #{l2.join(', ')}"
   if defined?(#{start}) and #{start}
@@ -56,6 +57,19 @@ if ENV['VERBOSE'] == 'true'
   end
 end
 EOS
+            if is_inline
+              f.puts "action #{action} {"
+              f.puts d
+              f.puts inline
+            else
+              f.puts line
+              f.puts d
+            end
+            if is_inline
+              f.puts '}'
+            end
+          else
+            f.puts line
           end
         end
       end
