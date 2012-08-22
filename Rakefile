@@ -44,7 +44,7 @@ task :ragel do
             inline = $2.strip
             is_inline = inline.length > 0
             base = action.sub(/^(Mark|Start|End)/, '').underscore
-            vars = [ "mark_#{base}", "start_#{base}", "end_#{base}", 'end_data_type', 'quote_value' ].uniq
+            vars = [ "mark_#{base}", "start_#{base}", "end_#{base}", 'end_data_type' ].uniq
             l1 = []
             l1 << "p=\#{p} \#{data[p..p].pack('c*').inspect}"
             l2 = vars.map { |name| "#{name}=\#{#{name}.inspect if defined?(#{name})}" }
