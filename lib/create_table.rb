@@ -2360,7 +2360,7 @@ self.parser_en_main = 1;
 
 # line 171 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
-    parens = quote_value = 0
+    parens = 0
     p = item = 0
     pe = eof = data.length
     

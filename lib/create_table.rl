@@ -169,7 +169,7 @@ class CreateTable
     data = Parser.remove_comments(str).unpack('c*')
     %% write data;
     # % (this fixes syntax highlighting)
-    parens = quote_value = 0
+    parens = 0
     p = item = 0
     pe = eof = data.length
     %% write init;

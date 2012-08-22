@@ -48,21 +48,23 @@
   action MarkDefault       { mark_default = p - 1                                         }
   action StartDefault      { start_default = p                                            }
   action EndDefault        {
-                             self.default = read(data, start_default, p).sub(/['"]$/, '').gsub(/(['"])\1/, '\1')
+                             memo = read(data, start_default, p)
+                             memo.gsub! %{\\\'}, %{'}
+                             memo.gsub! %{\\\"}, %{"}
+                             memo.gsub! /(['"])\1/, '\1'
+                             self.default = memo
                              end_data_type ||= mark_default
                            }
 
-  # conditions
-  action NotEnclosedInQuotes { (quote_value % 2) == 0 }
-  action EnclosedInQuotes    { (quote_value % 2) == 1 }
-
-  name            = quote_ident ident >StartName %EndName quote_ident;
-  primary_key     = ('primary'i space+ 'key'i) >MarkPrimaryKey @PrimaryKey;
-  autoincrement   = ('auto'i '_'? 'increment'i) >MarkAutoincrement @Autoincrement;
-  unique          = 'uniq'i %MarkUnique 'ue'i @Unique;
-  default         = (('default'i space+ quote_value?) & quote_value_counter) >MarkDefault ((any+ >StartDefault %EndDefault) & quote_value_counter) :> (space* when NotEnclosedInQuotes) | (quote_value when EnclosedInQuotes);
-  _null           = ('not'i %MarkNotNull)? space+ 'null'i @Null;
-  data_type       = any+;
+  name                    = quote_ident ident >StartName %EndName quote_ident;
+  primary_key             = ('primary'i space+ 'key'i) >MarkPrimaryKey @PrimaryKey;
+  autoincrement           = ('auto'i '_'? 'increment'i) >MarkAutoincrement @Autoincrement;
+  unique                  = 'uniq'i %MarkUnique 'ue'i @Unique;
+  quoted_default_value    = quote_value (not_quote_or_escape | escaped_something | quoted_quote)+ >StartDefault %EndDefault quote_value;
+  unquoted_default_value  = alnum+ >StartDefault %EndDefault space*;
+  default                 = ('default'i space+) >MarkDefault (quoted_default_value | unquoted_default_value);
+  _null                   = ('not'i %MarkNotNull)? space+ 'null'i @Null;
+  data_type               = any+;
 
   main := space* name space+ data_type >StartDataType _null? default? primary_key? unique? autoincrement? %EndDataType;
 }%%
@@ -170,7 +172,7 @@ class CreateTable
       data = Parser.remove_comments(str).strip.unpack('c*')
       %% write data;
       # % (this fixes syntax highlighting)
-      parens = quote_value = 0
+      parens = 0
       p = item = 0
       pe = eof = data.length
       %% write init;

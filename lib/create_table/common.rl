@@ -7,5 +7,7 @@
   rparens             = space* ')' space*;
   parens_counter      = ( any | '(' @{parens+=1} | ')' @{parens-=1} )*;
   with_parens         = any+ & parens_counter;
-  quote_value_counter = ( any | quote_value @{quote_value+=1} )*;
+  not_quote_or_escape = [^'"\\];
+  escaped_something   = /\\./;
+  quoted_quote        = "''";
 }%%

@@ -5,12 +5,12 @@ Feature: Parsing
   Scenario Outline: parsing columns
     Given column definition <column_definition>
     Then the name should be <name>
+    And the default should be <default>
     And the data_type should be <data_type>
     And the primary_key should be <primary_key>
     And the unique should be <unique>
     And the autoincrement should be <autoincrement>
     And the allow_null should be <allow_null>
-    And the default should be <default>
     Examples:
     | column_definition                                       | name | data_type                | primary_key | unique | autoincrement | allow_null  | default      |
     | "foo" INTEGER                                           | foo  | INTEGER                  | false       | false  | false         | true        | nil          |
@@ -28,13 +28,26 @@ Feature: Parsing
     | "foo" SERIAL PRIMARY KEY                                | foo  | INTEGER                  | true        | true   | true          | false       | nil          |
     | "foo" INTEGER UNIQUE GAR                                | foo  | INTEGER                  | false       | true   | false         | true        | nil          |
     | "foo" INTEGER DEFAULT 4                                 | foo  | INTEGER                  | false       | false  | false         | true        | "4"          |
+    | "foo" INTEGER DEFAULT 44                                | foo  | INTEGER                  | false       | false  | false         | true        | "44"         |
     | "foo" INTEGER DEFAULT '4'                               | foo  | INTEGER                  | false       | false  | false         | true        | "4"          |
+    | "foo" INTEGER DEFAULT '44'                              | foo  | INTEGER                  | false       | false  | false         | true        | "44"         |
     | "foo" CHARACTER VARYING(255) DEFAULT ' z x y '          | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "    |
     | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y'       | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"   |
     | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y '      | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "  |
     | "foo" CHARACTER VARYING(255) DEFAULT " z x y "          | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "    |
     | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y"       | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"   |
     | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y "      | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "  |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z \\\'x \\\'y'   | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"   |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z \\\'x \\\'y '  | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "  |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z x y "          | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "    |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z \\\"x \\\'y"   | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z "x 'y"   |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z \\\'x \\\"y "  | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x "y "  |
+    | "foo" INTEGER DEFAULT NULL                              | foo  | INTEGER                  | false       | false  | false         | true        | NULL         |
+    | "foo" INTEGER DEFAULT '4' AUTOINCREMENT                 | foo  | INTEGER                  | false       | false  | true          | true        | "4"          |
+    | "foo" INTEGER DEFAULT 4 AUTOINCREMENT                   | foo  | INTEGER                  | false       | false  | true          | true        | "4"          |
+    | "foo" INTEGER DEFAULT NULL AUTOINCREMENT                | foo  | INTEGER                  | false       | false  | true          | true        | NULL         |
+    | "foo" INTEGER NULL DEFAULT NULL AUTOINCREMENT           | foo  | INTEGER                  | false       | false  | true          | true        | NULL         |
+    | "foo" INTEGER NOT NULL DEFAULT NULL AUTOINCREMENT       | foo  | INTEGER                  | false       | false  | true          | false       | NULL         |
 
 #-------------------------------------------
 
