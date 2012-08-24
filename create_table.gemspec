@@ -4,9 +4,9 @@ require File.expand_path('../lib/create_table/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Seamus Abshere"]
   gem.email         = ["seamus@abshere.net"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Analyze and inspect CREATE TABLE SQL statements and translate across databases.}
+  gem.summary       = %q{Analyze and inspect CREATE TABLE SQL statements and translate across databases.}
+  gem.homepage      = "https://github.com/seamusabshere/create_table"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
