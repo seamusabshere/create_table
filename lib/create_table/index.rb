@@ -1,10 +1,8 @@
 
-# line 1 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 # MAKE SURE YOU'RE EDITING THE .RL FILE !!!
 
 =begin
 
-# line 19 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 
 =end
 
@@ -29,7 +27,6 @@ class CreateTable
     def parse(str)
       data = Parser.remove_comments(str).unpack('c*')
       
-# line 33 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 class << self
 	attr_accessor :_parser_actions
 	private :_parser_actions, :_parser_actions=
@@ -143,23 +140,19 @@ end
 self.parser_en_main = 1;
 
 
-# line 43 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       parens = 0
       p = item = 0
       pe = eof = data.length
       
-# line 153 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 48 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       
-# line 163 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 begin
 	_klen, _trans, _keys, _acts, _nacts = nil
 	_goto_level = 0
@@ -241,22 +234,17 @@ begin
 			_acts += 1
 			case _parser_actions[_acts - 1]
 when 0 then
-# line 9 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
  start_name = p                                    		end
 when 1 then
-# line 10 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
  self.name = read(data, start_name, p)             		end
 when 2 then
-# line 12 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
  start_column_name = p                             		end
 when 3 then
-# line 13 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
 		begin
  column_names << read(data, start_column_name, p)  		end
-# line 260 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.rb"
 			end # action switch
 		end
 	end
@@ -283,7 +271,6 @@ when 3 then
 	end
 	end
 
-# line 50 "/Users/seamusabshere/code/create_table/lib/create_table/index.rl.tmp"
       # % (this fixes syntax highlighting)
       self
     end

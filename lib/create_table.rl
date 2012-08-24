@@ -80,6 +80,10 @@ class CreateTable
     end
   end
 
+  def inspect
+    %{#<CreateTable>}
+  end
+
   def column_count
     columns.length
   end

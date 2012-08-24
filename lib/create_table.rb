@@ -1,5 +1,4 @@
 
-# line 1 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 require 'create_table/version'
 require 'create_table/parser'
 require 'create_table/column_name_based_collection'
@@ -12,7 +11,6 @@ require 'create_table/unique'
 
 =begin
 
-# line 48 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 
 =end
 
@@ -46,6 +44,10 @@ class CreateTable
     if sql
       parse sql
     end
+  end
+
+  def inspect
+    %{#<CreateTable>}
   end
 
   def column_count
@@ -136,7 +138,6 @@ class CreateTable
   def parse(str)
     data = Parser.remove_comments(str).unpack('c*')
     
-# line 140 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 class << self
 	attr_accessor :_parser_actions
 	private :_parser_actions, :_parser_actions=
@@ -2358,23 +2359,19 @@ end
 self.parser_en_main = 1;
 
 
-# line 171 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     parens = 0
     p = item = 0
     pe = eof = data.length
     
-# line 2368 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 begin
 	p ||= 0
 	pe ||= data.length
 	cs = parser_start
 end
 
-# line 176 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     
-# line 2378 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 begin
 	_klen, _trans, _keys, _widec, _acts, _nacts = nil
 	_goto_level = 0
@@ -2413,7 +2410,6 @@ begin
 				case _parser_cond_spaces[_parser_cond_offsets[cs] + ((_mid - _keys)>>1)]
 	when 0 then	_widec = 128+ (data[p].ord - -128)
 	_widec += 256 if ( 
-# line 33 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
  parens == 0  )
 				end # case
 			end
@@ -2479,58 +2475,44 @@ begin
 			_acts += 1
 			case _parser_actions[_acts - 1]
 when 0 then
-# line 8 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens+=1		end
 when 1 then
-# line 8 "/Users/seamusabshere/code/create_table/lib/create_table/common.rl"
 		begin
 parens-=1		end
 when 2 then
-# line 17 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  start_table_name = p                                  		end
 when 3 then
-# line 18 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  self.table_name = read(data, start_table_name, p)     		end
 when 4 then
-# line 20 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  start_column = p                                      		end
 when 5 then
-# line 21 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  parse_column read(data, start_column, p)              		end
 when 6 then
-# line 23 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  start_primary_key = p                                 		end
 when 7 then
-# line 24 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  self.primary_key = read(data, start_primary_key, p)   		end
 when 8 then
-# line 26 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  start_unique = p                                      		end
 when 9 then
-# line 27 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  parse_unique read(data, start_unique, p)              		end
 when 10 then
-# line 29 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  start_index = p                                       		end
 when 11 then
-# line 30 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
  parse_index read(data, start_index, p)                		end
 when 12 then
-# line 35 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
 		begin
 @temporary=true		end
-# line 2534 "/Users/seamusabshere/code/create_table/lib/create_table.rl.rb"
 			end # action switch
 		end
 	end
@@ -2557,7 +2539,6 @@ when 12 then
 	end
 	end
 
-# line 178 "/Users/seamusabshere/code/create_table/lib/create_table.rl.tmp"
     # % (this fixes syntax highlighting)
     self
   end
