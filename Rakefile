@@ -43,27 +43,25 @@ task :ragel do
             action = $1.strip
             inline = $2.strip
             is_inline = inline.length > 0
-            base = action.sub(/^(Mark|Start|End)/, '').underscore
+            base = action.sub('Quoted', '').sub('Unquoted', '').sub(/^(Mark|Start|End)/, '').underscore
             vars = [ "mark_#{base}", "start_#{base}", "end_#{base}", 'end_data_type' ].uniq
             l1 = []
             l1 << "p=\#{p} \#{data[p..p].pack('c*').inspect}"
             l2 = vars.map { |name| "#{name}=\#{#{name}.inspect if defined?(#{name})}" }
             start = "start_#{base}"
-            d = <<-EOS
-if ENV['VERBOSE'] == 'true'
-  $stderr.puts "\n#{action}\n  #{l1.join(', ')}\n  #{l2.join(', ')}"
-  if defined?(#{start}) and #{start}
-    $stderr.puts '  ***' + read(data, #{start}, p).inspect
-  end
+            pre = <<-EOS
+$stderr.puts "\n#{action}\n  #{l1.join(', ')}\n  #{l2.join(', ')}"
+if defined?(#{start}) and #{start}
+  $stderr.puts '  ***' + read(data, #{start}, p).inspect
 end
 EOS
             if is_inline
               f.puts "action #{action} {"
-              f.puts d
+              f.puts pre
               f.puts inline
             else
               f.puts line
-              f.puts d
+              f.puts pre
             end
             if is_inline
               f.puts '}'
