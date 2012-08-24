@@ -6,7 +6,7 @@ describe CreateTable do
       @c = CreateTable.new(%{
         CREATE TABLE cats (
           nickname CHARACTER VARYING(255),
-          birthday DATE DEFAULT '2005-01-01' NOT NULL,
+          birthday DATE NOT NULL DEFAULT '2005-01-01',
           license_id INTEGER NULL,
           price NUMERIC(5,2) DEFAULT '14.50',
           PRIMARY KEY (nickname),
