@@ -6,65 +6,110 @@
 
   include "common.rl";
 
-  action StartName         { start_name = p                                               }
-  action EndName           { self.name = read(data, start_name, p)                        }
+  action StartName {
+    start_name = p
+  }
+  action EndName {
+    self.name = read(data, start_name, p)
+  }
 
-  action StartDataType     { start_data_type = p                                          }
-  action EndDataType       {
-                             end_data_type ||= p
-                             self.data_type = read(data, start_data_type, end_data_type)
-                           }
+  action StartDataType {
+    start_data_type = p
+  }
 
-  action MarkPrimaryKey    { mark_primary_key = p - 1                                     }
-  action PrimaryKey        {
-                             primary_key!
-                             end_data_type ||= mark_primary_key
-                           }
+  action MarkNotNull {
+    mark_not_null = p - 4
+  }
+  action Null {
+    start_default ||= nil
+    unless start_default # FIXME could this be excluded by the state machine instead?
+      mark_not_null ||= nil
+      if mark_not_null
+        self.null = false
+        end_data_type ||= mark_not_null
+      else
+        self.null = true
+        end_data_type ||= p - 4
+      end
+    end
+  }
 
-  action MarkUnique        { mark_unique = p - 5                                          }
-  action Unique            {
-                             unique!
-                             end_data_type ||= mark_unique
-                           }
+  action MarkDefault {
+    mark_default = p - 1
+  }
+  action StartDefault {
+    start_default = p
+    end_data_type ||= mark_default
+  }
+  action EndQuotedDefault {
+    end_default = p
+    self.default = read_quoted(data, start_default, end_default)
+    ended_quoted_default = true
+  }
 
-  action MarkAutoincrement { mark_autoincrement = p - 1                                   }
-  action Autoincrement     {
-                             autoincrement!
-                             end_data_type ||= mark_autoincrement
-                           }
+  action MarkPrimaryKey {
+    mark_primary_key = p - 1
+  }
+  action PrimaryKey {
+    primary_key!
+    end_data_type ||= mark_primary_key
+    end_default ||= mark_primary_key
+  }
 
-  action MarkNotNull       { mark_not_null = p - 4                                        }
-  action Null              {
-                             mark_not_null ||= nil
-                             if mark_not_null
-                               self.null = false
-                               end_data_type ||= mark_not_null
-                             else
-                               self.null = true
-                               end_data_type ||= p - 4
-                             end
-                           }
+  action MarkUnique {
+    mark_unique = p - 5
+  }
+  action Unique {
+    unique!
+    end_data_type ||= mark_unique
+    end_default ||= mark_unique
+  }
 
-  action MarkDefault       { mark_default = p - 1                                         }
-  action StartDefault      { start_default = p                                            }
-  action EndDefault        {
-                             self.default = read_quoted(data, start_default, p)
-                             end_data_type ||= mark_default
-                           }
+  action MarkAutoincrement {
+    mark_autoincrement = p - 1
+  }
+  action Autoincrement {
+    autoincrement!
+    end_data_type ||= mark_autoincrement
+    end_default ||= mark_autoincrement
+  }
 
-  action MarkCharset       { mark_charset = p - 5                                         }
-  action StartCharset      { start_charset = p                                            }
-  action EndCharset        {
-                             self.charset = read_quoted(data, start_charset, p)
-                             end_data_type ||= mark_charset
-                           }
+  action MarkCollate {
+    mark_collate = p - 1
+  }
+  action StartCollate {
+    start_collate = p
+  }
+  action EndCollate {
+    self.collate = read_quoted(data, start_collate, p)
+    end_data_type ||= mark_collate
+    end_default ||= mark_collate
+  }
 
-  action MarkCollate       { mark_collate = p - 1                                         }
-  action StartCollate      { start_collate = p                                            }
-  action EndCollate        {
-                             self.collate = read_quoted(data, start_collate, p)
-                             end_data_type ||= mark_collate
-                           }
+  action MarkCharset {
+    mark_charset = p - 5
+  }
+  action StartCharset {
+    start_charset = p
+  }
+  action EndCharset {
+    self.charset = read_quoted(data, start_charset, p)
+    end_data_type ||= mark_charset
+    end_default ||= mark_charset
+  }
+
+  action BitterEnd {
+    # EndUnquotedDefault
+    start_default ||= nil
+    ended_quoted_default ||= nil
+    if start_default and not ended_quoted_default
+      end_default ||= p
+      self.default = read_quoted(data, start_default, end_default)
+    end
+    # EndDataType
+    end_data_type ||= p
+    self.data_type = read(data, start_data_type, end_data_type)
+  }
 
   name                    = quote_ident ident >StartName %EndName quote_ident;
   
@@ -74,8 +119,8 @@
   
   unique                  = 'uniq'i %MarkUnique 'ue'i @Unique;
   
-  quoted_default_value    = quote_value (not_quote_or_escape | escaped_something | quoted_quote)+ >StartDefault %EndDefault quote_value;
-  unquoted_default_value  = alnum+ >StartDefault %EndDefault space*;
+  quoted_default_value    = quote_value (not_quote_or_escape | escaped_something | quoted_quote)+ >StartDefault %EndQuotedDefault quote_value;
+  unquoted_default_value  = (alnum any*) >StartDefault; # space*;
   default                 = ('default'i space+) >MarkDefault (quoted_default_value | unquoted_default_value);
   
   _null                   = ('not'i %MarkNotNull)? space+ 'null'i @Null;
@@ -90,12 +135,22 @@
   
   data_type               = any+;
 
-  main := space* name space+ data_type >StartDataType _null? default? primary_key? unique? autoincrement? collate? charset? %EndDataType;
+  main := space* name space+ data_type >StartDataType _null? default? primary_key? unique? autoincrement? charset? collate? %BitterEnd;
 }%%
 =end
 
 class CreateTable
   class Column
+    class << self
+      def munge_data_type(original, ansi)
+        if original =~ /\((.*)\)/
+          [ ansi, '(', $1, ')' ].join
+        else
+          ansi
+        end
+      end
+    end
+
     BLANK_STRING = ''
 
     include Parser
@@ -118,10 +173,24 @@ class CreateTable
     end
 
     def data_type=(str)
+      str = str.upcase
       case str
-      when /serial/i
+      when /SERIAL/
         autoincrement!
         @data_type = 'INTEGER'
+      when 'INT IDENTITY(1,1)'
+        # TODO is this correct?
+        autoincrement!
+        primary_key!
+        @data_type = 'INTEGER'
+      when 'TINYINT(1)'
+        @data_type = 'BOOLEAN'
+      when 'INT(11)'
+        @data_type = 'INTEGER'
+      when /\bINT\b/
+        @data_type = Column.munge_data_type str, 'INTEGER'
+      when /\bVARCHAR\b/
+        @data_type = Column.munge_data_type str, 'CHARACTER VARYING'
       else
         @data_type = str
       end
@@ -186,7 +255,13 @@ class CreateTable
     end
 
     def autoincrement
-      @autoincrement == true
+      if defined?(@autoincrement)
+        @autoincrement
+      elsif default and default =~ /nextval/i
+        true
+      else
+        false
+      end
     end
 
     # @private

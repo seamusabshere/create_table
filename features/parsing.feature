@@ -5,58 +5,71 @@ Feature: Parsing
   Scenario Outline: parsing columns
     Given column definition <column_definition>
     Then the name should be <name>
-    And the primary_key should be <primary_key>
-    And the unique should be <unique>
-    And the autoincrement should be <autoincrement>
-    And the allow_null should be <allow_null>
     And the default should be <default>
     And the charset should be <charset>
     And the collate should be <collate>
     And the data_type should be <data_type>
+    And the primary_key should be <primary_key>
+    And the unique should be <unique>
+    And the autoincrement should be <autoincrement>
+    And the allow_null should be <allow_null>
     Examples:
-    | column_definition                                         | name | data_type                | primary_key | unique | autoincrement | allow_null  | default      | charset    | collate  |
-    | "foo" INTEGER                                             | foo  | INTEGER                  | false       | false  | false         | true        | nil          | nil        | nil      |
-    | "foo" NUMERIC(5,2) UNIQUE                                 | foo  | NUMERIC(5,2)             | false       | true   | false         | true        | nil          | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) UNIQUE                       | foo  | CHARACTER VARYING(255)   | false       | true   | false         | true        | nil          | nil        | nil      |
-    | "foo" INTEGER PRIMARY KEY AUTO_INCREMENT                  | foo  | INTEGER                  | true        | true   | true          | false       | nil          | nil        | nil      |
-    | "foo" INTEGER PRIMARY KEY AUTOINCREMENT                   | foo  | INTEGER                  | true        | true   | true          | false       | nil          | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) PRIMARY KEY                  | foo  | CHARACTER VARYING(255)   | true        | true   | false         | false       |              | nil        | nil      |
-    | "foo" AUTO AUTO AUTOINCREMEN                              | foo  | AUTO AUTO AUTOINCREMEN   | false       | false  | false         | true        | nil          | nil        | nil      |
-    | "foo" UN UNI UNIQ UNIQU UNIQU UNIQUE                      | foo  | UN UNI UNIQ UNIQU UNIQU  | false       | true   | false         | true        | nil          | nil        | nil      |
-    | "foo" INTEGER NULL                                        | foo  | INTEGER                  | false       | false  | false         | true        | nil          | nil        | nil      |
-    | "foo" INTEGER NOT NULL                                    | foo  | INTEGER                  | false       | false  | false         | false       | nil          | nil        | nil      |
-    | "foo" INTEGER UNIQUE AUTOINCREMENT                        | foo  | INTEGER                  | false       | true   | true          | true        | nil          | nil        | nil      |
-    | "foo" SERIAL                                              | foo  | INTEGER                  | false       | false  | true          | true        | nil          | nil        | nil      |
-    | "foo" SERIAL PRIMARY KEY                                  | foo  | INTEGER                  | true        | true   | true          | false       | nil          | nil        | nil      |
-    | "foo" INTEGER UNIQUE GAR                                  | foo  | INTEGER                  | false       | true   | false         | true        | nil          | nil        | nil      |
-    | "foo" INTEGER DEFAULT 4                                   | foo  | INTEGER                  | false       | false  | false         | true        | "4"          | nil        | nil      |
-    | "foo" INTEGER DEFAULT 44                                  | foo  | INTEGER                  | false       | false  | false         | true        | "44"         | nil        | nil      |
-    | "foo" INTEGER DEFAULT '4'                                 | foo  | INTEGER                  | false       | false  | false         | true        | "4"          | nil        | nil      |
-    | "foo" INTEGER DEFAULT '44'                                | foo  | INTEGER                  | false       | false  | false         | true        | "44"         | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT ' z x y '            | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "    | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y'         | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"   | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y '        | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "  | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT " z x y "            | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "    | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y"         | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"   | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y "        | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "  | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT ' z \\\'x \\\'y'     | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"   | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT ' z \\\'x \\\'y '    | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "  | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT " z x y "            | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "    | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT " z \\\"x \\\'y"     | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z "x 'y"   | nil        | nil      |
-    | "foo" CHARACTER VARYING(255) DEFAULT " z \\\'x \\\"y "    | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x "y "  | nil        | nil      |
-    | "foo" INTEGER DEFAULT NULL                                | foo  | INTEGER                  | false       | false  | false         | true        | NULL         | nil        | nil      |
-    | "foo" INTEGER DEFAULT '4' AUTOINCREMENT                   | foo  | INTEGER                  | false       | false  | true          | true        | "4"          | nil        | nil      |
-    | "foo" INTEGER DEFAULT 4 AUTOINCREMENT                     | foo  | INTEGER                  | false       | false  | true          | true        | "4"          | nil        | nil      |
-    | "foo" INTEGER DEFAULT NULL AUTOINCREMENT                  | foo  | INTEGER                  | false       | false  | true          | true        | NULL         | nil        | nil      |
-    | "foo" INTEGER NULL DEFAULT NULL AUTOINCREMENT             | foo  | INTEGER                  | false       | false  | true          | true        | NULL         | nil        | nil      |
-    | "foo" INTEGER NOT NULL DEFAULT NULL AUTOINCREMENT         | foo  | INTEGER                  | false       | false  | true          | false       | NULL         | nil        | nil      |
-    | "foo" INTEGER COLLATE utf8_bin                            | foo  | INTEGER                  | false       | false  | false         | true        | nil          | nil        | utf8_bin |
-    | "foo" INTEGER CHARACTER SET iso_8859-1                    | foo  | INTEGER                  | false       | false  | false         | true        | nil          | iso_8859-1 | nil      |
-    | "foo" INTEGER CHARSET iso_8859-1                          | foo  | INTEGER                  | false       | false  | false         | true        | nil          | iso_8859-1 | nil      |
-    | "foo" INTEGER CHARACTER SET iso_8859-1 COLLATE utf8_bin   | foo  | INTEGER                  | false       | false  | false         | true        | nil          | iso_8859-1 | utf8_bin |
-    | "foo" INTEGER CHARSET iso_8859-1 COLLATE utf8_bin         | foo  | INTEGER                  | false       | false  | false         | true        | nil          | iso_8859-1 | utf8_bin |
-    | "foo" INTEGER CHARACTER   SET iso_8859-1                  | foo  | INTEGER                  | false       | false  | false         | true        | nil          | iso_8859-1 | nil      |
-    | "foo" INTEGER CHARACTER   SET iso_8859-1 COLLATE utf8_bin | foo  | INTEGER                  | false       | false  | false         | true        | nil          | iso_8859-1 | utf8_bin |
+    | column_definition                                         | name | data_type                | primary_key | unique | autoincrement | allow_null  | default            | charset    | collate  |
+    | "foo" INTEGER                                             | foo  | INTEGER                  | false       | false  | false         | true        | nil                | nil        | nil      |
+    | "foo" NUMERIC(5,2) UNIQUE                                 | foo  | NUMERIC(5,2)             | false       | true   | false         | true        | nil                | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) UNIQUE                       | foo  | CHARACTER VARYING(255)   | false       | true   | false         | true        | nil                | nil        | nil      |
+    | "foo" INTEGER PRIMARY KEY AUTO_INCREMENT                  | foo  | INTEGER                  | true        | true   | true          | false       | nil                | nil        | nil      |
+    | "foo" INTEGER PRIMARY KEY AUTOINCREMENT                   | foo  | INTEGER                  | true        | true   | true          | false       | nil                | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) PRIMARY KEY                  | foo  | CHARACTER VARYING(255)   | true        | true   | false         | false       |                    | nil        | nil      |
+    | "foo" AUTO AUTO AUTOINCREMEN                              | foo  | AUTO AUTO AUTOINCREMEN   | false       | false  | false         | true        | nil                | nil        | nil      |
+    | "foo" UN UNI UNIQ UNIQU UNIQU UNIQUE                      | foo  | UN UNI UNIQ UNIQU UNIQU  | false       | true   | false         | true        | nil                | nil        | nil      |
+    | "foo" INTEGER NULL                                        | foo  | INTEGER                  | false       | false  | false         | true        | nil                | nil        | nil      |
+    | "foo" INTEGER NOT NULL                                    | foo  | INTEGER                  | false       | false  | false         | false       | nil                | nil        | nil      |
+    | "foo" INTEGER UNIQUE AUTOINCREMENT                        | foo  | INTEGER                  | false       | true   | true          | true        | nil                | nil        | nil      |
+    | "foo" SERIAL                                              | foo  | INTEGER                  | false       | false  | true          | true        | nil                | nil        | nil      |
+    | "foo" SERIAL PRIMARY KEY                                  | foo  | INTEGER                  | true        | true   | true          | false       | nil                | nil        | nil      |
+    | "foo" INTEGER UNIQUE GAR                                  | foo  | INTEGER                  | false       | true   | false         | true        | nil                | nil        | nil      |
+    | "foo" INTEGER DEFAULT 4                                   | foo  | INTEGER                  | false       | false  | false         | true        | "4"                | nil        | nil      |
+    | "foo" INTEGER DEFAULT 44                                  | foo  | INTEGER                  | false       | false  | false         | true        | "44"               | nil        | nil      |
+    | "foo" INTEGER DEFAULT '4'                                 | foo  | INTEGER                  | false       | false  | false         | true        | "4"                | nil        | nil      |
+    | "foo" INTEGER DEFAULT '44'                                | foo  | INTEGER                  | false       | false  | false         | true        | "44"               | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT a                    | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | a                  | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT a('b')               | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | a('b')             | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT a('b c')             | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | a('b c')           | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z x y '            | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "          | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y'         | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"         | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z ''x ''y '        | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "        | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z x y "            | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "          | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y"         | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"         | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z ''x ''y "        | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "        | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z \\\'x \\\'y'     | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y"         | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT ' z \\\'x \\\'y '    | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x 'y "        | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z x y "            | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z x y "          | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z \\\"x \\\'y"     | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z "x 'y"         | nil        | nil      |
+    | "foo" CHARACTER VARYING(255) DEFAULT " z \\\'x \\\"y "    | foo  | CHARACTER VARYING(255)   | false       | false  | false         | true        | " z 'x "y "        | nil        | nil      |
+    | "foo" INTEGER DEFAULT NULL                                | foo  | INTEGER                  | false       | false  | false         | true        | NULL               | nil        | nil      |
+    | "foo" INTEGER DEFAULT '4' AUTOINCREMENT                   | foo  | INTEGER                  | false       | false  | true          | true        | "4"                | nil        | nil      |
+    | "foo" INTEGER DEFAULT 4 AUTOINCREMENT                     | foo  | INTEGER                  | false       | false  | true          | true        | "4"                | nil        | nil      |
+    | "foo" INTEGER DEFAULT NULL AUTOINCREMENT                  | foo  | INTEGER                  | false       | false  | true          | true        | NULL               | nil        | nil      |
+    | "foo" INTEGER NULL DEFAULT NULL AUTOINCREMENT             | foo  | INTEGER                  | false       | false  | true          | true        | NULL               | nil        | nil      |
+    | "foo" INTEGER NOT NULL DEFAULT NULL AUTOINCREMENT         | foo  | INTEGER                  | false       | false  | true          | false       | NULL               | nil        | nil      |
+    | "foo" INTEGER COLLATE utf8_bin                            | foo  | INTEGER                  | false       | false  | false         | true        | nil                | nil        | utf8_bin |
+    | "foo" INTEGER CHARACTER SET iso_8859-1                    | foo  | INTEGER                  | false       | false  | false         | true        | nil                | iso_8859-1 | nil      |
+    | "foo" INTEGER CHARSET iso_8859-1                          | foo  | INTEGER                  | false       | false  | false         | true        | nil                | iso_8859-1 | nil      |
+    | "foo" INTEGER CHARACTER SET iso_8859-1 COLLATE utf8_bin   | foo  | INTEGER                  | false       | false  | false         | true        | nil                | iso_8859-1 | utf8_bin |
+    | "foo" INTEGER CHARSET iso_8859-1 COLLATE utf8_bin         | foo  | INTEGER                  | false       | false  | false         | true        | nil                | iso_8859-1 | utf8_bin |
+    | "foo" INTEGER CHARACTER   SET iso_8859-1                  | foo  | INTEGER                  | false       | false  | false         | true        | nil                | iso_8859-1 | nil      |
+    | "foo" INTEGER CHARACTER   SET iso_8859-1 COLLATE utf8_bin | foo  | INTEGER                  | false       | false  | false         | true        | nil                | iso_8859-1 | utf8_bin |
+    | "foo" VARCHAR(123)                                        | foo  | CHARACTER VARYING(123)   | false       | false  | false         | true        | nil                | nil        | nil      |
+    | "foo" TINYINT(1)                                          | foo  | BOOLEAN                  | false       | false  | false         | true        | nil                | nil        | nil      |
+    | "foo" INT(11)                                             | foo  | INTEGER                  | false       | false  | false         | true        | nil                | nil        | nil      |
+    | "foo" SERIAL                                              | foo  | INTEGER                  | false       | false  | true          | true        | nil                | nil        | nil      |
+    | "foo" SERIAL UNIQUE                                       | foo  | INTEGER                  | false       | true   | true          | true        | nil                | nil        | nil      |
+    | "foo" SERIAL PRIMARY KEY                                  | foo  | INTEGER                  | true        | true   | true          | false       | nil                | nil        | nil      |
+    | "foo" integer NOT NULL DEFAULT nextval('foo_seq')         | foo  | INTEGER                  | false       | false  | true          | false       | nextval('foo_seq') | nil        | nil      |
+    | "foo" INT IDENTITY(1,1)                                   | foo  | INTEGER                  | true        | true   | true          | false       | nil                | nil        | nil      |
+
+#   | column_definition                                         | name | data_type                | primary_key | unique | autoincrement | allow_null  | default            | charset    | collate  |
 
 #-------------------------------------------
 
