@@ -53,7 +53,7 @@ TODO: stop making excuses and write a proper README.
 
 ## As a web service
 
-Check out the [http://create-table.herokuapp.com](CreateTable demo)!
+Check out the [CreateTable demo web service](http://create-table.herokuapp.com)!
 
     $ curl -i -X POST -H "Accept: application/json" --data "CREATE TABLE cats ( id INTEGER AUTO_INCREMENT, nickname CHARACTER VARYING(255), birthday DATE, license_id INTEGER, price NUMERIC(5,2), PRIMARY KEY (\"id\") )" http://create-table.herokuapp.com/statements
     HTTP/1.1 201 Created
