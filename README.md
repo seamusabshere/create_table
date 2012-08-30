@@ -2,6 +2,8 @@
 
 Analyze and inspect CREATE TABLE SQL statements and translate across databases.
 
+See the [introductory post on Brighter Planet's blog](http://numbers.brighterplanet.com/2012/08/27/analyze-create-table-sql-with-ragel-and-ruby/).
+
 ## BETA
 
 Tests and documentation are being added constantly.
