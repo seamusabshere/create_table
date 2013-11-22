@@ -14,25 +14,28 @@ require 'create_table/unique'
 
   include "create_table/common.rl";
 
-  action StartTableName   { start_table_name = p                                  }
-  action EndTableName     { self.table_name = read(data, start_table_name, p)     }
+  action StartTableName     { start_table_name = p                                    }
+  action EndTableName       { self.table_name = read(data, start_table_name, p)       }
 
-  action StartColumn      { start_column = p                                      }
-  action EndColumn        { parse_column read(data, start_column, p)              }
+  action StartFromTableName { start_from_table_name = p                               }
+  action EndFromTableName   { self.table_name = read(data, start_from_table_name, p)  }
+
+  action StartColumn        { start_column = p                                        }
+  action EndColumn          { parse_column read(data, start_column, p)                }
   
-  action StartPrimaryKey  { start_primary_key = p                                 }
-  action EndPrimaryKey    { self.primary_key = read(data, start_primary_key, p)   }
+  action StartPrimaryKey    { start_primary_key = p                                   }
+  action EndPrimaryKey      { self.primary_key = read(data, start_primary_key, p)     }
   
-  action StartUnique      { start_unique = p                                      }
-  action EndUnique        { parse_unique read(data, start_unique, p)              }
+  action StartUnique        { start_unique = p                                        }
+  action EndUnique          { parse_unique read(data, start_unique, p)                }
   
-  action StartIndex       { start_index = p                                       }
-  action EndIndex         { parse_index read(data, start_index, p)                }
+  action StartIndex         { start_index = p                                         }
+  action EndIndex           { parse_index read(data, start_index, p)                  }
 
   # conditions
   action NotEnclosedInParentheses { parens == 0 }
 
-  create_table           = 'create'i space+ ('temporary'i space+ @{@temporary=true})? 'table'i;
+  create_table           = 'create'i space+ ('temporary'i space+ @{@temporary=true})?  ('temp'i space+ @{@temporary=true})? 'table'i;
   
   table_name             = quote_ident ident >StartTableName %EndTableName quote_ident;
   
@@ -43,8 +46,9 @@ require 'create_table/unique'
   primary_key_definition = space* ('constraint'i space+)? 'primary'i space+ 'key'i lparens quote_ident ident >StartPrimaryKey %EndPrimaryKey quote_ident rparens :> [,)];
   unique_definition      = space* ('constraint'i space+)? 'unique'i (space+ ('key'i | 'index'i))? with_parens >StartUnique %EndUnique :> [,)] when NotEnclosedInParentheses;
   index_definition       = space* ('index'i | 'key'i) with_parens >StartIndex %EndIndex :> [,)] when NotEnclosedInParentheses;
+  create_table_as        = 'as'i space+ 'select'i space+ '*' space+ 'from'i space+ quote_ident ident >StartFromTableName %EndFromTableName quote_ident;
 
-  main := space* create_table space+ table_name space+ lparens (column_definition | primary_key_definition | unique_definition | index_definition)+ rparens;
+  main := space* create_table space+ table_name space+ ( lparens (column_definition | primary_key_definition | unique_definition | index_definition)+ rparens | create_table_as );
 }%%
 =end
 
