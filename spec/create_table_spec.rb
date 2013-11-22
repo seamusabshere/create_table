@@ -52,6 +52,9 @@ describe CreateTable do
       i.name.should == 'index_cats_on_price'
       i.column_names.should == ['price']
     end
+    it "is not temporary" do
+      @c.temporary.should == nil
+    end
   end
 
   describe 'generating SQL' do
@@ -83,6 +86,51 @@ describe CreateTable do
         )
       }
       assert_same_sql @c.to_postgresql, ref
+    end
+  end
+
+  describe 'parsing temporary table' do
+    before do
+      @temp_table = CreateTable.new(%{
+        CREATE TEMPORARY TABLE cats (
+          nickname CHARACTER VARYING(255)
+        )
+      })
+    end
+    it "creates the table" do
+      @temp_table.table_name.should == 'cats'
+    end
+    it "is temporary" do
+      @temp_table.temporary.should == true
+    end
+  end
+
+  describe 'parsing temp table' do
+    before do
+      @temp_table = CreateTable.new(%{
+        CREATE TEMP TABLE cats (
+          nickname CHARACTER VARYING(255)
+        )
+      })
+    end
+    it "creates the table" do
+      @temp_table.table_name.should == 'cats'
+    end
+    it "is temporary" do
+      @temp_table.temporary.should == true
+    end
+  end
+  
+  describe 'parsing CREATE TABLE AS' do
+    before do
+      @temp_table = CreateTable.new(%{
+        CREATE TEMPORARY TABLE cats AS (
+          SELECT * FROM existing
+        )
+      })
+    end
+    it "creates the table" do
+      @temp_table.table_name.should == 'cats'
     end
   end
 end
